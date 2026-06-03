@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- PWA / App Tags -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="LeagueApp">
+  <title>Tennis League Dashboard</title>
+
+  <!-- React & Babel Scripts -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  
+  <!-- EmailJS Script -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --text: #ffffff;
+      --text-muted: #a0a0a0;
+      --gold: #d4af37;
+      --gold-hover: #f1c40f;
+      --r-sm: 8px;
+      --r-md: 12px;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #root {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--gold);
+    }
+
+    .your-court-hero {
+      background-color: var(--card-bg);
+      padding: 20px;
+      border-radius: var(--r-md);
+      border: 1px solid #333;
+      margin-bottom: 30px;
+    }
+
+    .your-court-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .your-court-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .your-court-time {
+      color: var(--gold);
+      margin-bottom: 15px;
+    }
+
+    .your-court-players {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .your-court-player {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: var(--r-sm);
+    }
+
+    .your-court-player.you {
+      border-left: 3px solid var(--gold);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .sub-section {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--r-sm);
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .checkbox-label input {
+      transform: scale(1.2);
+      margin-top: 3px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: var(--r-sm);
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.2s;
+    }
+
+    .btn-gold {
+      background-color: var(--gold);
+      color: #000;
+    }
+
+    .btn-gold:hover {
+      background-color: var(--gold-hover);
+    }
+
+    .btn:disabled {
+      background-color: #555;
+      color: #888;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // --- MOCK DATA ---
+    const PLAYERS = [
+      { id: 1, name: "James Anderson", email: "james@example.com" },
+      { id: 2, name: "Sarah Jenkins", email: "sarah@example.com" },
+      { id: 3, name: "Mike Chen", email: "mike@example.com" },
+      { id: 4, name: "David Kim", email: "david@example.com" },
+      { id: 5, name: "Emma Wilson", email: "emma@example.com" },
+      // Add your actual players here
+    ];
+
+    // Simulating the logged-in user
+    const CURRENT_USER = PLAYERS[0]; // Set to James for testing
+
+    const INIT_SCHEDULE = {
+      label: "Week 1",
+      courts: [
+        { num: 1, time: "7:00 PM", players: [1, 2, 3, 4] },
+        { num: 2, time: "7:00 PM", players: [5, 6, 7, 8] } // Assuming IDs 5-8 exist
+      ]
+    };
+
+    // --- HELPER FUNCTIONS ---
+    const getFirstName = (id, players) => {
+      const p = players.find(p => p.id === id);
+      return p ? p.name.split(" ")[0] : "Unknown";
+    };
+
+    const Avatar = ({ pid, players }) => {
+      const p = players.find(p => p.id === pid);
+      const initial = p ? p.name.charAt(0) : "?";
+      return <div className="avatar">{initial}</div>;
+    };
+
+    // --- MAIN APP COMPONENT ---
+    function App() {
+      const [isSubConfirmed, setIsSubConfirmed] = useState(false);
+      const [isSendingMsg, setIsSendingMsg] = useState(false);
+      const [messageStatus, setMessageStatus] = useState(null); // 'success' or 'error'
+
+      // Initialize EmailJS
+      useEffect(() => {
+        emailjs.init("YOUR_PUBLIC_KEY_HERE"); // <-- REPLACE THIS
+      }, []);
+
+      // Find the current user's match
+      const upcomingWeek = INIT_SCHEDULE;
+      const myCourt = upcomingWeek.courts.find(c => c.players.includes(CURRENT_USER.id));
+
+      const handleSubRequest = async () => {
+        if (!myCourt) return;
+        setIsSendingMsg(true);
+        setMessageStatus(null);
+
+        // 1. Find all players playing at the SAME time as this match
+        const busyPlayerIds = new Set();
+        upcomingWeek.courts.forEach(c => {
+          if (c.time === myCourt.time) {
+            c.players.forEach(pid => busyPlayerIds.add(pid));
+          }
+        });
+
+        // 2. Filter the master player list for available subs
+        const availableSubs = PLAYERS.filter(p => !busyPlayerIds.has(p.id) && p.id !== CURRENT_USER.id);
+        const subEmails = availableSubs.map(p => p.email).join(",");
+
+        if (!subEmails) {
+          alert("No available players found to email.");
+          setIsSendingMsg(false);
+          return;
+        }
+
+        // 3. Send via EmailJS
+        try {
+          await emailjs.send(
+            "YOUR_SERVICE_ID_HERE",  // <-- REPLACE THIS
+            "YOUR_TEMPLATE_ID_HERE", // <-- REPLACE THIS
+            {
+              player_name: CURRENT_USER.name,
+              court_num: myCourt.num,
+              match_time: myCourt.time,
+              sub_emails: subEmails,
+              reply_to: CURRENT_USER.email
+            }
+          );
+          
+          setMessageStatus('success');
+          setIsSubConfirmed(false); // Reset the checkbox
+        } catch (error) {
+          console.error("Failed to send email:", error);
+          setMessageStatus('error');
+        } finally {
+          setIsSendingMsg(false);
+        }
+      };
+
+      return (
+        <div>
+          <h1>🏆 League Dashboard</h1>
+
+          {myCourt ? (
+            <div className="your-court-hero">
+              <div className="your-court-label">Your Next Match</div>
+              <div className="your-court-title">{upcomingWeek.label} — Court {myCourt.num}</div>
+              <div className="your-court-time">🕒 {myCourt.time}</div>
+              
+              <div className="your-court-players">
+                {myCourt.players.map((pid) => (
+                  <div key={pid} className={`your-court-player ${pid === CURRENT_USER.id ? 'you' : ''}`}>
+                    <Avatar pid={pid} players={PLAYERS} />
+                    {getFirstName(pid, PLAYERS)} {pid === CURRENT_USER.id && '(You)'}
+                  </div>
+                ))}
+              </div>
+
+              {/* Sub Request Area */}
+              <div className="sub-section">
+                {messageStatus === 'success' && (
+                  <div style={{color: '#4ade80', marginBottom: '15px', fontWeight: 'bold'}}>
+                    ✓ Sub request sent successfully!
+                  </div>
+                )}
+                
+                {messageStatus === 'error' && (
+                  <div style={{color: '#f87171', marginBottom: '15px', fontWeight: 'bold'}}>
+                    ✗ Failed to send. Check your EmailJS keys.
+                  </div>
+                )}
+
+                <label className="checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    checked={isSubConfirmed} 
+                    onChange={(e) => setIsSubConfirmed(e.target.checked)} 
+                  />
+                  I have attempted to find a sub directly and would like to email the available league players.
+                </label>
+
+                {isSubConfirmed && (
+                  <button 
+                    className="btn btn-gold" 
+                    onClick={handleSubRequest}
+                    disabled={isSendingMsg}
+                  >
+                    {isSendingMsg ? 'Sending Email...' : 'Confirm & Send Email'}
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="your-court-hero">
+              <div className="your-court-title">No Match Scheduled</div>
+              <div className="your-court-label" style={{marginTop: '10px'}}>You have a bye this week!</div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
