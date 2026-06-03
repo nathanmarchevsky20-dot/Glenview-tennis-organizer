@@ -2,245 +2,165 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glenview Tennis League</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   
-  <!-- PWA App Tags -->
-  <link rel="manifest" href="manifest.json" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="TennisLeague">
-  <title>Tennis League Dashboard</title>
-
-  <!-- React & Babel Scripts -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   
-  <!-- EmailJS Script -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
-  <!-- Original Clean Tennis Green Theme Styles -->
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --primary-green: #2e7d32;
-      --accent-green: #4caf50;
-      --text-main: #333333;
-      --text-muted: #666666;
-      --border-color: #e0e0e0;
-      --radius: 10px;
-      --shadow: 0 4px 6px rgba(0,0,0,0.05);
+      --forest: #0d2b1c; --pine: #1b4332; --fern: #2d6a4f; --sage: #52b788;
+      --mint: #b7e4c7; --dew: #d8f3dc; --ivory: #faf8f3; --cream: #f0ece4;
+      --gold: #b8892a; --gold-m: #d4a843; --gold-l: #f5e6c0; --gold-xl: #fdf8ed;
+      --white: #ffffff; --ink: #1a1a1a; --slate: #4a5568; --mist: #9ca3af; --fog: #e5e7eb;
+      --red: #c0392b; --red-l: #fde8e8; --blue: #1a56a0; --blue-l: #dbeafe;
+      --purple: #5b21b6; --purple-l: #ede9fe;
+      --r: 12px; --r-sm: 8px; --r-lg: 16px;
+      --shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
     }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    #root {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .header-container {
-      text-align: center;
-      margin-bottom: 25px;
-      padding: 10px;
-    }
-
-    h1 {
-      color: var(--primary-green);
-      margin: 0 0 5px 0;
-      font-size: 1.8rem;
-    }
-
-    .subtitle {
-      color: var(--text-muted);
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    .app-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
-      margin-bottom: 25px;
-    }
-
-    .card-title {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--primary-green);
-      margin-top: 0;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .meta-info {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 15px;
-    }
-
-    .player-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .player-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 6px;
-      border: 1px solid #eee;
-    }
-
-    .player-row.highlight-user {
-      border-left: 4px solid var(--primary-green);
-      background: #edf7ed;
-    }
-
-    .avatar-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--primary-green);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
-
-    /* Sub Request Interactive Element */
-    .sub-panel {
-      background: #f5f5f5;
-      padding: 15px;
-      border-radius: 8px;
-      border: 1px dashed #ccc;
-    }
-
-    .sub-checkbox-label {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      color: var(--text-main);
-      line-height: 1.4;
-    }
-
-    .sub-checkbox-label input {
-      margin-top: 3px;
-      transform: scale(1.1);
-    }
-
-    /* Scoreboard Tracking Form Styles */
-    .score-form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 15px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    label {
-      font-size: 0.85rem;
-      font-weight: bold;
-      color: var(--text-muted);
-    }
-
-    select, input[type="number"] {
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-      font-size: 0.95rem;
-      background: white;
-    }
-
-    /* Core Table Styles */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    th {
-      border-bottom: 2px solid var(--border-color);
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      padding: 10px;
-    }
-
-    td {
-      border-bottom: 1px solid #f0f0f0;
-      padding: 12px 10px;
-      font-size: 0.95rem;
-    }
-
-    .rank-number {
-      font-weight: bold;
-      color: var(--primary-green);
-      margin-right: 6px;
-    }
-
-    /* Button Variations */
-    .action-btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-top: 12px;
-    }
-
-    .btn-green {
-      background-color: var(--primary-green);
-      color: white;
-    }
-
-    .btn-green:hover {
-      background-color: #1b5e20;
-    }
-
-    .action-btn:disabled {
-      background-color: #cccccc;
-      color: #777777;
-      cursor: not-allowed;
-    }
-
-    .status-toast {
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
-    .toast-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-    .toast-error { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+    body { font-family: 'Outfit', sans-serif; background: var(--ivory); color: var(--ink); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    button { font-family: 'Outfit', sans-serif; cursor: pointer; border: none; outline: none; }
+    input, select { font-family: 'Outfit', sans-serif; outline: none; }
+    
+    .nav { background: var(--forest); height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.25); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .nav-logo-icon { width: 36px; height: 36px; background: var(--gold-m); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo-text { color: #fff; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-link { color: rgba(255,255,255,.65); padding: 7px 13px; border-radius: var(--r-sm); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .18s; background: none; border: none; }
+    .nav-link:hover { color: #fff; background: rgba(255,255,255,.1); }
+    .nav-link.active { color: #fff; background: rgba(255,255,255,.15); }
+    
+    .admin-chip { background: var(--gold-m); color: var(--forest); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: .04em; }
+    .admin-bar { background: var(--gold-xl); border-bottom: 2px solid var(--gold-l); padding: 8px 1.5rem; font-size: 13px; font-weight: 500; color: #7a5b10; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    
+    .page { max-width: 1120px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    .page-title { font-size: 1.8rem; font-weight: 700; color: var(--forest); }
+    .page-subtitle { color: var(--slate); font-size: .93rem; margin-top: .3rem; margin-bottom: 1.5rem; }
+    
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    @media(max-width: 860px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+    
+    .card { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow); border: 1px solid var(--fog); overflow: hidden; margin-bottom: 1.5rem; }
+    .card-header { padding: .85rem 1.2rem; border-bottom: 1px solid var(--fog); display: flex; align-items: center; justify-content: space-between; background: var(--cream); }
+    .card-title { font-size: .95rem; font-weight: 600; color: var(--forest); }
+    .card-body { padding: 1.2rem; }
+    
+    .your-court-hero { background: linear-gradient(135deg, var(--forest), var(--pine) 60%, var(--fern)); border-radius: var(--r-lg); padding: 1.5rem; margin-bottom: 2rem; color: #fff; position: relative; overflow: hidden; box-shadow: var(--shadow); }
+    .your-court-hero::before { content: '🎾'; position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 4rem; opacity: .12; }
+    .your-court-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; opacity: .7; margin-bottom: .4rem; }
+    .your-court-title { font-size: 1.4rem; font-weight: 700; font-family: 'Playfair Display', serif; margin-bottom: .3rem; }
+    .your-court-time { font-size: .88rem; opacity: .75; margin-bottom: 1rem; }
+    .your-court-players { display: flex; flex-wrap: wrap; gap: 8px; }
+    .your-court-player { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.15); padding: 5px 10px; border-radius: 20px; font-size: 13px; }
+    .your-court-player.you { background: var(--gold-m); font-weight: 600; color: var(--forest); }
+    
+    .court-card { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow); border: 1px solid var(--fog); overflow: hidden; }
+    .court-header { background: var(--forest); color: #fff; padding: .7rem 1.1rem; display: flex; align-items: center; justify-content: space-between; }
+    .court-name { font-weight: 600; font-size: .9rem; }
+    .court-time { font-size: 12px; opacity: .7; }
+    .court-field { background: linear-gradient(160deg, #1a5c34, #1e6b3c); border-radius: var(--r-sm); padding: .8rem; position: relative; min-height: 116px; margin-bottom: 10px; }
+    .court-net { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,.35); transform: translateX(-50%); }
+    .court-net::after { content: 'NET'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,.85); color: var(--forest); font-size: 9px; font-weight: 700; letter-spacing: .08em; padding: 2px 6px; border-radius: 4px; }
+    
+    .court-team { width: calc(50% - 12px); display: flex; flex-direction: column; gap: 5px; }
+    .court-team.left { float: left; }
+    .court-team.right { float: right; }
+    .court-p { background: rgba(255,255,255,.15); border-radius: 6px; padding: 4px 7px; display: flex; align-items: center; gap: 6px; }
+    .court-p.me { background: rgba(212,168,67,.5); border: 1px solid rgba(212,168,67,.8); }
+    .court-p-av { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .court-p-name { font-size: 11px; color: #fff; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .clearfix::after { content: ''; display: block; clear: both; }
+    
+    .avatar { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: var(--r-sm); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .18s; border: none; white-space: nowrap; }
+    .btn-primary { background: var(--forest); color: #fff; } .btn-primary:hover { background: var(--pine); }
+    .btn-outline { background: var(--white); color: var(--ink); border: 1px solid var(--fog); } .btn-outline:hover { background: var(--cream); }
+    .btn-gold { background: var(--gold-m); color: #fff; } .btn-gold:hover { background: var(--gold); }
+    .btn-block { width: 100%; justify-content: center; }
+    .btn-google { background: #fff; color: #3c4043; border: 1px solid #ddd; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; padding: 12px 20px; font-size: 15px; font-weight: 500; border-radius: var(--r-sm); box-shadow: var(--shadow-sm); transition: all .18s; }
+    .btn-google:hover { box-shadow: 0 2px 10px rgba(0,0,0,.12); }
+    
+    .badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+    .badge-green { background: var(--dew); color: var(--fern); }
+    .badge-red { background: var(--red-l); color: var(--red); }
+    .badge-gold { background: var(--gold-l); color: var(--gold); }
+    .badge-gray { background: var(--fog); color: var(--slate); }
+    
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--slate); margin-bottom: 5px; }
+    .form-input { width: 100%; padding: 9px 12px; border: 1px solid var(--fog); border-radius: var(--r-sm); font-size: 14px; background: var(--white); color: var(--ink); transition: border .15s; }
+    .form-input:focus { border-color: var(--fern); box-shadow: 0 0 0 3px rgba(45,106,79,.1); }
+    .form-select { width: 100%; padding: 9px 12px; border: 1px solid var(--fog); border-radius: var(--r-sm); font-size: 14px; background: var(--white); color: var(--ink); }
+    .form-hint { font-size: 12px; color: var(--mist); margin-top: 4px; }
+    
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .modal { background: var(--white); border-radius: var(--r-lg); padding: 1.75rem; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,.2); max-height: 90vh; overflow-y: auto; }
+    .divider { height: 1px; background: var(--fog); margin: 1rem 0; }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--mist); margin-bottom: .75rem; }
+    
+    .tabs { display: flex; gap: 3px; background: var(--cream); padding: 3px; border-radius: var(--r-sm); width: fit-content; margin-bottom: 1.5rem; }
+    .tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--slate); background: none; border: none; transition: all .15s; }
+    .tab.active { background: var(--white); color: var(--forest); box-shadow: var(--shadow-sm); }
+    
+    .win-bar-wrap { width: 70px; height: 5px; background: var(--fog); border-radius: 3px; overflow: hidden; }
+    .win-bar { height: 100%; border-radius: 3px; background: var(--fern); }
+    .alert { padding: 11px 15px; border-radius: var(--r-sm); font-size: 14px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; }
+    .alert-gold { background: var(--gold-xl); color: #7a5b10; border: 1px solid var(--gold-l); }
+    
+    .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
+    .player-card { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow-sm); border: 1px solid var(--fog); padding: 1rem; display: flex; align-items: center; gap: 12px; }
+    .player-card-info { flex: 1; min-width: 0; }
+    .player-card-name { font-weight: 600; font-size: .88rem; }
+    .player-card-meta { font-size: 12px; color: var(--mist); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .admin-toolbar { background: var(--forest); border-radius: var(--r); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .admin-toolbar-label { color: rgba(255,255,255,.7); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; flex-shrink: 0; }
+    .admin-toolbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,.2); flex-shrink: 0; }
+    
+    .rank-pip { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .rank-pip-gold { background: var(--gold-l); color: var(--gold); }
+    .rank-pip-gray { background: var(--fog); color: var(--slate); }
+    
+    .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--forest), #1a5c34 60%, var(--fern)); padding: 1rem; }
+    .login-card { background: var(--white); border-radius: var(--r-lg); padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
+    .login-logo { width: 60px; height: 60px; background: var(--forest); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 1rem; }
+    .google-picker { background: var(--white); border-radius: var(--r-lg); width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+    .google-picker-header { background: var(--blue); color: #fff; padding: 1rem 1.25rem; border-radius: var(--r-lg) var(--r-lg) 0 0; display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 500; }
+    .google-picker-body { padding: .5rem; max-height: 400px; overflow-y: auto; }
+    .google-user-opt { display: flex; align-items: center; gap: 12px; padding: .75rem 1rem; border-radius: var(--r-sm); cursor: pointer; transition: background .15s; }
+    .google-user-opt:hover { background: var(--cream); }
+    
+    .preset-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .preset-table th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--mist); padding: 7px 10px; background: var(--cream); border-bottom: 1px solid var(--fog); }
+    .preset-table td { padding: 7px 10px; border-bottom: 1px solid var(--fog); vertical-align: middle; }
+    
+    .preview-court { border: 1px solid var(--fog); border-radius: var(--r); overflow: hidden; margin-bottom: 1rem; }
+    .preview-court-head { background: var(--forest); color: #fff; padding: 8px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
+    .preview-court-body { padding: 10px 14px; background: var(--white); }
+    .preview-team-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--mist); margin-bottom: 5px; }
+    .preview-player-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+    
+    table.standings-table { width: 100%; border-collapse: collapse; text-align: left; }
+    table.standings-table th { border-bottom: 2px solid var(--fog); color: var(--slate); font-size: 0.85rem; text-transform: uppercase; padding: 10px; }
+    table.standings-table td { border-bottom: 1px solid var(--fog); padding: 12px 10px; font-size: 0.95rem; }
+    
+    .sub-section-box { margin-top: 1rem; padding: 1rem; background: var(--cream); border-radius: var(--r-sm); border: 1px dashed var(--mist); }
+    .sub-checkbox-lbl { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; cursor: pointer; line-height: 1.4; color: var(--ink); }
+    .sub-checkbox-lbl input { margin-top: 3px; transform: scale(1.1); }
+    .toast-msg { padding: 10px; border-radius: var(--r-sm); font-size: 0.88rem; font-weight: 600; margin-bottom: 12px; }
+    .toast-success { background: var(--dew); color: var(--forest); border: 1px solid var(--mint); }
+    .toast-error { background: var(--red-l); color: var(--red); border: 1px solid #fca5a5; }
   </style>
 </head>
 <body>
@@ -249,293 +169,772 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // --- BASE DATA SET (Used if LocalStorage is empty) ---
-    const DEFAULT_PLAYERS = [
-      { id: 1, name: "James Anderson", email: "james@example.com", wins: 5, losses: 2, points: 15 },
-      { id: 2, name: "Sarah Jenkins", email: "sarah@example.com", wins: 4, losses: 3, points: 12 },
-      { id: 3, name: "Mike Chen", email: "mike@example.com", wins: 3, losses: 4, points: 9 },
-      { id: 4, name: "David Kim", email: "david@example.com", wins: 2, losses: 5, points: 6 },
-      { id: 5, name: "Emma Wilson", email: "emma@example.com", wins: 6, losses: 1, points: 18 }
+    /* ── BASE REPOSITORY SETUP ── */
+    const INIT_PLAYERS = [
+      { id: 1, name: 'James Mitchell', email: 'j.mitchell@gmail.com', phone: '(847) 555-0101', active: true },
+      { id: 2, name: 'Sarah Chen', email: 's.chen@gmail.com', phone: '(847) 555-0102', active: true },
+      { id: 3, name: 'Marcus Webb', email: 'm.webb@gmail.com', phone: '(847) 555-0103', active: true },
+      { id: 4, name: 'Priya Patel', email: 'p.patel@gmail.com', phone: '(847) 555-0104', active: true },
+      { id: 5, name: 'Tom Garrison', email: 't.garrison@gmail.com', phone: '(847) 555-0105', active: true },
+      { id: 6, name: 'Elena Vasquez', email: 'e.vasquez@gmail.com', phone: '(847) 555-0106', active: true },
+      { id: 7, name: 'David Kim', email: 'd.kim@gmail.com', phone: '(847) 555-0107', active: true },
+      { id: 8, name: 'Rachel Torres', email: 'r.torres@gmail.com', phone: '(847) 555-0108', active: true },
+      { id: 9, name: 'Chris Novak', email: 'c.novak@gmail.com', phone: '(847) 555-0109', active: true },
+      { id: 10, name: 'Aisha Johnson', email: 'a.johnson@gmail.com', phone: '(847) 555-0110', active: true },
+      { id: 11, name: 'Luke Brennan', email: 'l.brennan@gmail.com', phone: '(847) 555-0111', active: true },
+      { id: 12, name: 'Nina Okafor', email: 'n.okafor@gmail.com', phone: '(847) 555-0112', active: true }
     ];
 
-    const INITIAL_SCHEDULE = {
-      weekLabel: "Week 2 of 8",
-      courts: [
-        { id: "c1", num: 1, time: "7:00 PM", players: [1, 2, 3, 4] }
-      ]
-    };
+    const MOCK_ACCOUNTS = [
+      ...INIT_PLAYERS.map(p => ({ ...p, role: 'player' })),
+      { id: 0, name: 'League Admin', email: 'admin@glenview.tennis', phone: '(847) 555-0000', active: true, role: 'admin' }
+    ];
 
-    const CURRENT_LOGGED_IN_USER_ID = 1; // Defaulting to James for dashboard perspective
+    const DEFAULT_STANDINGS = INIT_PLAYERS.map((p, idx) => ({
+      id: p.id,
+      wins: 18 - idx > 0 ? 18 - idx : 2,
+      losses: 5 + idx,
+      points: (18 - idx > 0 ? 18 - idx : 2) * 3,
+      pf: 140 - idx * 4,
+      pa: 100 + idx * 3
+    }));
 
-    // --- UTILITY COMPONENT FOR AVATARS ---
-    const PlayerAvatar = ({ name }) => {
-      const initial = name ? name.charAt(0) : "?";
-      return <div className="avatar-icon">{initial}</div>;
-    };
+    const DEFAULT_SCHEDULE = [
+      {
+        label: 'Week 8 — Jun 2, 2026',
+        courts: [
+          { num: 1, time: '7:00 PM', players: [1, 2, 3, 4] },
+          { num: 2, time: '7:00 PM', players: [5, 6, 7, 8] },
+          { num: 3, time: '8:30 PM', players: [9, 10, 11, 12] }
+        ]
+      }
+    ];
 
-    // --- MAIN APPLICATION INTERFACE ---
-    function TennisLeagueApp() {
-      // Load current standings state from local storage so inputs persist
+    const DEFAULT_LAST_SEASON = INIT_PLAYERS.map((p, idx) => ({
+      id: p.id,
+      rank: idx + 1,
+      wins: 15 - idx,
+      losses: 5 + idx
+    }));
+
+    /* ── STATIC DECORATOR HELPERS ── */
+    const AVC = ['#2d6a4f', '#1b4332', '#4a7c59', '#52796f', '#354f52', '#2c3e50', '#8b5e3c', '#5c4033', '#3d405b', '#6b4226', '#1a5276', '#6d4c41'];
+    function pColor(id) { return AVC[(id - 1) % AVC.length] || '#2d6a4f'; }
+    function initials(name) { return name ? name.split(' ').map(n => n[0]).join('') : '?'; }
+    function pObj(id, list) { return list.find(x => x.id === id) || { name: 'Unknown', id: 0, email: '', phone: '' }; }
+    function pFirst(id, list) { return pObj(id, list).name.split(' ')[0]; }
+
+    function Avatar({ pid, size = 34, players }) {
+      const p = pObj(pid, players);
+      return <div className="avatar" style={{ width: size, height: size, background: pColor(pid), fontSize: size * .35 }}>{initials(p.name)}</div>;
+    }
+
+    function autoAssignCourts(activePlayers, lastSeason, standings) {
+      const scored = activePlayers.map(p => {
+        const ls = lastSeason.find(x => x.id === p.id);
+        const cs = standings.find(x => x.id === p.id);
+        const n = activePlayers.length;
+        let score = 0.5;
+        const hasLS = ls && ls.rank > 0;
+        const hasCS = cs && (cs.wins + cs.losses) > 0;
+        if (hasLS && hasCS) {
+          const lsS = (n + 1 - ls.rank) / n;
+          const csS = cs.wins / (cs.wins + cs.losses);
+          score = lsS * 0.35 + csS * 0.65;
+        } else if (hasLS) {
+          score = (n + 1 - ls.rank) / n;
+        } else if (hasCS) {
+          score = cs.wins / (cs.wins + cs.losses);
+        }
+        return { id: p.id, score };
+      });
+      scored.sort((a, b) => b.score - a.score);
+      const groups = [scored.slice(0, 4), scored.slice(4, 8), scored.slice(8, 12)];
+      return groups.map((g, i) => {
+        if (g.length < 4) return { num: i + 1, players: g.map(x => x.id), time: '7:00 PM' };
+        return {
+          num: i + 1,
+          players: [g[0].id, g[3].id, g[1].id, g[2].id],
+          time: i === 2 ? '8:30 PM' : '7:00 PM'
+        };
+      });
+    }
+
+    /* ── PRINCIPAL ROOT APPLICATION ELEMENT ── */
+    function GlenviewTennisApp() {
+      const [user, setUser] = useState(null);
+      const [currentTab, setCurrentTab] = useState('dashboard');
+      
+      // Local storage reactive states
       const [players, setPlayers] = useState(() => {
-        const savedData = localStorage.getItem("tennis_league_standings");
-        return savedData ? JSON.parse(savedData) : DEFAULT_PLAYERS;
+        const local = localStorage.getItem('gtl_players');
+        return local ? JSON.parse(local) : INIT_PLAYERS;
+      });
+      const [standings, setStandings] = useState(() => {
+        const local = localStorage.getItem('gtl_standings');
+        return local ? JSON.parse(local) : DEFAULT_STANDINGS;
+      });
+      const [schedule, setSchedule] = useState(() => {
+        const local = localStorage.getItem('gtl_schedule');
+        return local ? JSON.parse(local) : DEFAULT_SCHEDULE;
+      });
+      const [lastSeason, setLastSeason] = useState(() => {
+        const local = localStorage.getItem('gtl_lastseason');
+        return local ? JSON.parse(local) : DEFAULT_LAST_SEASON;
       });
 
-      // Interactive Scoreboard tracking states
-      const [winnerId, setWinnerId] = useState("");
-      const [loserId, setLoserId] = useState("");
-      const [pointsEarned, setPointsEarned] = useState(3);
-
-      // Interactive Sub Request email system states
+      // UI Control States
       const [subChecked, setSubChecked] = useState(false);
-      const [isSendingEmail, setIsSendingEmail] = useState(false);
-      const [emailFeedback, setEmailFeedback] = useState({ type: null, text: "" });
+      const [isSendingMsg, setIsSendingMsg] = useState(false);
+      const [emailStatus, setEmailStatus] = useState({ type: null, text: '' });
 
-      // Save to local storage automatically when standings change
+      // Score Recording Forms
+      const [winningPlayerId, setWinningPlayerId] = useState('');
+      const [losingPlayerId, setLosingPlayerId] = useState('');
+      const [allocatedPoints, setAllocatedPoints] = useState(3);
+
+      // Modal Triggers
+      const [showLastSeasonModal, setShowLastSeasonModal] = useState(false);
+      const [showPreviewModal, setShowPreviewModal] = useState(false);
+      const [showPresetModal, setShowPresetModal] = useState(false);
+      const [selectedPresetCourt, setSelectedPresetCourt] = useState(null);
+      const [proposedCourts, setProposedCourts] = useState([]);
+
       useEffect(() => {
-        localStorage.setItem("tennis_league_standings", JSON.stringify(players));
+        localStorage.setItem('gtl_players', JSON.stringify(players));
       }, [players]);
-
-      // Initialize EmailJS safely
       useEffect(() => {
-        emailjs.init("YOUR_PUBLIC_KEY_HERE"); // <-- Insert your EmailJS Public Key here
+        localStorage.setItem('gtl_standings', JSON.stringify(standings));
+      }, [standings]);
+      useEffect(() => {
+        localStorage.setItem('gtl_schedule', JSON.stringify(schedule));
+      }, [schedule]);
+      useEffect(() => {
+        localStorage.setItem('gtl_lastseason', JSON.stringify(lastSeason));
+      }, [lastSeason]);
+
+      useEffect(() => {
+        emailjs.init("YOUR_PUBLIC_KEY_HERE"); // Optional EmailJS key integration
       }, []);
 
-      // Calculate context details based on current user
-      const currentUserObj = players.find(p => p.id === CURRENT_LOGGED_IN_USER_ID) || players[0];
-      const activeMatchCard = INITIAL_SCHEDULE.courts.find(c => c.players.includes(currentUserObj.id));
-      const sortedStandingsList = [...players].sort((a, b) => b.points - a.points);
+      if (!user) {
+        return <LoginPage onLogin={(loggedUser) => setUser(loggedUser)} />;
+      }
 
-      // --- HANDLER: SCORE TRACKING UPDATE ---
-      const handleLogMatchScore = (e) => {
+      const isAdmin = user.role === 'admin';
+      const currentWeekData = schedule[0] || { label: 'No Active Week Set', courts: [] };
+      const userCourtMatch = currentWeekData.courts.find(c => c.players.includes(user.id));
+      const sortedStandings = [...standings].sort((a, b) => b.points - a.points);
+
+      // Log score form operation handler
+      const handleRecordMatchScore = (e) => {
         e.preventDefault();
-        if (!winnerId || !loserId) {
-          alert("Please select both a winning player and a losing player.");
+        if (!winningPlayerId || !losingPlayerId) {
+          alert("Please fill in both the winner and loser options.");
           return;
         }
-        if (winnerId === loserId) {
-          alert("A player cannot play against themselves. Please fix selections.");
+        if (winningPlayerId === losingPlayerId) {
+          alert("A player cannot compete against themselves.");
           return;
         }
 
-        const updatedPlayersList = players.map(player => {
-          if (player.id === parseInt(winnerId)) {
-            return {
-              ...player,
-              wins: player.wins + 1,
-              points: player.points + parseInt(pointsEarned)
-            };
+        const nextStandings = standings.map(row => {
+          if (row.id === parseInt(winningPlayerId)) {
+            return { ...row, wins: row.wins + 1, points: row.points + parseInt(allocatedPoints) };
           }
-          if (player.id === parseInt(loserId)) {
-            return {
-              ...player,
-              losses: player.losses + 1
-            };
+          if (row.id === parseInt(losingPlayerId)) {
+            return { ...row, losses: row.losses + 1 };
           }
-          return player;
+          return row;
         });
 
-        setPlayers(updatedPlayersList);
-        // Reset interactive entry options
-        setWinnerId("");
-        setLoserId("");
-        alert("Match scores successfully recorded and standings updated!");
+        setStandings(nextStandings);
+        setWinningPlayerId('');
+        setLosingPlayerId('');
+        alert("Scores successfully updated and local storage updated!");
       };
 
-      // --- HANDLER: EMAIL SUB REQUEST ---
-      const handleProcessSubRequest = async () => {
-        if (!activeMatchCard) return;
-        setIsSendingEmail(true);
-        setEmailFeedback({ type: null, text: "" });
+      // Email sub request operations builder
+      const handleBroadcastSubRequest = async () => {
+        if (!userCourtMatch) return;
+        setIsSendingMsg(true);
+        setEmailStatus({ type: null, text: '' });
 
-        // Identify players occupied during the exact same slot
-        const blockedUserIds = new Set();
-        INITIAL_SCHEDULE.courts.forEach(court => {
-          if (court.time === activeMatchCard.time) {
-            court.players.forEach(pid => blockedUserIds.add(pid));
+        const busyIds = new Set();
+        currentWeekData.courts.forEach(c => {
+          if (c.time === userCourtMatch.time) {
+            c.players.forEach(pid => busyIds.add(pid));
           }
         });
 
-        // Filter master pool down to available records
-        const eligibleSubs = players.filter(p => !blockedUserIds.has(p.id) && p.id !== currentUserObj.id);
-        const compiledEmailString = eligibleSubs.map(p => p.email).join(",");
+        const activeAvailableSubs = players.filter(p => p.active && !busyIds.has(p.id) && p.id !== user.id);
+        const aggregatedEmails = activeAvailableSubs.map(p => p.email).filter(Boolean).join(',');
 
-        if (!compiledEmailString) {
-          alert("No open league players were found available for this time slot.");
-          setIsSendingEmail(false);
+        if (!aggregatedEmails) {
+          alert("No off-duty league players match this specific schedule bracket.");
+          setIsSendingMsg(false);
           return;
         }
 
         try {
           await emailjs.send(
-            "YOUR_SERVICE_ID_HERE",  // <-- Insert your EmailJS Service ID
-            "YOUR_TEMPLATE_ID_HERE", // <-- Insert your EmailJS Template ID
+            "YOUR_SERVICE_ID_HERE",
+            "YOUR_TEMPLATE_ID_HERE",
             {
-              player_name: currentUserObj.name,
-              court_num: activeMatchCard.num,
-              match_time: activeMatchCard.time,
-              sub_emails: compiledEmailString,
-              reply_to: currentUserObj.email
+              player_name: user.name,
+              court_num: userCourtMatch.num,
+              match_time: userCourtMatch.time,
+              sub_emails: aggregatedEmails,
+              reply_to: user.email
             }
           );
-          
-          setEmailFeedback({ type: "success", text: "✓ Substitute broadcast email successfully sent to available players!" });
+          setEmailStatus({ type: 'success', text: '✓ Substitute request successfully broadcast to all available players.' });
           setSubChecked(false);
         } catch (err) {
-          console.error("EmailJS dispatch failed:", err);
-          setEmailFeedback({ type: "error", text: "✗ Error sending request. Verify your EmailJS configuration variables." });
+          console.error(err);
+          setEmailStatus({ type: 'error', text: '✗ Desired action failed. Verify your EmailJS variables inside code block.' });
         } finally {
-          setIsSendingEmail(false);
+          setIsSendingMsg(false);
         }
+      };
+
+      const handleInitiateAutoAssign = () => {
+        const activePool = players.filter(p => p.active);
+        if (activePool.length < 12) {
+          alert(" Serpentine mapping requires at least 12 active players.");
+          return;
+        }
+        const outputs = autoAssignCourts(activePool, lastSeason, standings);
+        setProposedCourts(outputs);
+        setShowPreviewModal(true);
       };
 
       return (
         <div>
-          <div className="header-container">
-            <h1>🏆 Glenview Tennis League</h1>
-            <p className="subtitle">Official Players Dashboard</p>
+          {/* NAVIGATION BAR */}
+          <div className="nav">
+            <div className="nav-logo" onClick={() => setCurrentTab('dashboard')}>
+              <div className="nav-logo-icon">🎾</div>
+              <div className="nav-logo-text">Glenview Tennis League</div>
+            </div>
+            <div className="nav-links">
+              <button className={`nav-link ${currentTab === 'dashboard' ? 'active' : ''}`} onClick={() => setCurrentTab('dashboard')}>Dashboard</button>
+              <button className={`nav-link ${currentTab === 'standings' ? 'active' : ''}`} onClick={() => setCurrentTab('standings')}>Standings</button>
+              <button className={`nav-link ${currentTab === 'schedule' ? 'active' : ''}`} onClick={() => setCurrentTab('schedule')}>Schedules</button>
+              {isAdmin && <button className={`nav-link ${currentTab === 'admin' ? 'active' : ''}`} onClick={() => setCurrentTab('admin')}>Admin</button>}
+            </div>
+            <div className="nav-right">
+              {isAdmin ? <span className="admin-chip">ADMIN</span> : <span className="admin-chip" style={{ background: 'var(--cream)', color: 'var(--forest)' }}>PLAYER</span>}
+              <button className="nav-link" style={{ fontSize: '12px' }} onClick={() => setUser(null)}>Log Out</button>
+            </div>
           </div>
 
-          {/* FEATURE 1: SCHEDULE AND SUBSTITUTE REQUEST SYSTEM */}
-          {activeMatchCard ? (
-            <div className="app-card">
-              <div className="card-title">
-                <span>Your Scheduled Match</span>
-                <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>{INITIAL_SCHEDULE.weekLabel}</span>
-              </div>
-              <div className="meta-info">
-                <strong>📍 Court Allocation:</strong> Court {activeMatchCard.num} <br />
-                <strong>🕒 Time Window:</strong> {activeMatchCard.time}
-              </div>
+          {/* ADMIN ACTION SUB BAR CHIP */}
+          <div className="admin-bar">
+            <span>Logged in as: <strong>{user.name}</strong> ({user.email})</span>
+            <button className="btn btn-outline btn-xs" onClick={() => {
+              const alternative = MOCK_ACCOUNTS.find(a => a.id !== user.id);
+              if (alternative) setUser(alternative);
+            }}>🔄 Swap Role Profile</button>
+          </div>
 
-              <div className="player-list">
-                {activeMatchCard.players.map(pid => {
-                  const matchPlayer = players.find(p => p.id === pid);
-                  if (!matchPlayer) return null;
-                  const isSelf = matchPlayer.id === currentUserObj.id;
-                  return (
-                    <div key={pid} className={`player-row ${isSelf ? 'highlight-user' : ''}`}>
-                      <PlayerAvatar name={matchPlayer.name} />
-                      <div>
-                        <strong>{matchPlayer.name}</strong> {isSelf && " (You)"}
-                      </div>
+          <div className="page">
+            {/* VIEW 1: DASHBOARD MAIN CORE PANEL */}
+            {currentTab === 'dashboard' && (
+              <div>
+                <h1 className="page-title">Welcome back, {user.name.split(' ')[0]}!</h1>
+                <p className="page-subtitle">Personal league overview and action items.</p>
+
+                {/* Personalized Schedule Hero Block */}
+                {userCourtMatch ? (
+                  <div className="your-court-hero">
+                    <div className="your-court-label">Your Next Scheduled Event</div>
+                    <div className="your-court-title">{currentWeekData.label} — Court Assignment {userCourtMatch.num}</div>
+                    <div className="your-court-time">🕒 Match Window Slot: {userCourtMatch.time}</div>
+                    <div className="your-court-players">
+                      {userCourtMatch.players.map(pid => (
+                        <div key={pid} className={`your-court-player ${pid === user.id ? 'you' : ''}`}>
+                          <Avatar pid={pid} size={22} players={players} />
+                          {pFirst(pid, players)} {pid === user.id && '(You)'}
+                        </div>
+                      ))}
                     </div>
-                  );
-                })}
-              </div>
 
-              <div className="sub-panel">
-                {emailFeedback.text && (
-                  <div className={`status-toast ${emailFeedback.type === 'success' ? 'toast-success' : 'toast-error'}`}>
-                    {emailFeedback.text}
+                    {/* Integrated Substitute System UI */}
+                    <div className="sub-section-box">
+                      {emailStatus.text && (
+                        <div className={`toast-msg ${emailStatus.type === 'success' ? 'toast-success' : 'toast-error'}`}>
+                          {emailStatus.text}
+                        </div>
+                      )}
+                      <label className="sub-checkbox-lbl">
+                        <input type="checkbox" checked={subChecked} onChange={(e) => setSubChecked(e.target.checked)} />
+                        I need a substitute player for this match window. Automatically filter and dispatch a broadcast notification email to off-duty league players.
+                      </label>
+                      {subChecked && (
+                        <button className="btn btn-primary btn-block" style={{ marginTop: '12px' }} onClick={handleBroadcastSubRequest} disabled={isSendingMsg}>
+                          {isSendingMsg ? 'Filtering & Dispatched...' : 'Confirm & Dispatch Notification Broadcast'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="alert alert-gold">
+                    ℹ️ You do not have an active court assignment for {currentWeekData.label}. You are currently listed on-bye or off-duty.
                   </div>
                 )}
+
+                <div className="two-col">
+                  {/* Score Logging Form Box Element */}
+                  <div className="card">
+                    <div className="card-header"><div className="card-title">📊 Record Match Scores</div></div>
+                    <div className="card-body">
+                      <form onSubmit={handleRecordMatchScore}>
+                        <div className="form-group">
+                          <label className="form-label">Winning Competitor</label>
+                          <select className="form-select" value={winningPlayerId} onChange={e => setWinningPlayerId(e.target.value)}>
+                            <option value="">Select match winner...</option>
+                            {players.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                          </select>
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">Losing Competitor</label>
+                          <select className="form-select" value={losingPlayerId} onChange={e => setLosingPlayerId(e.target.value)}>
+                            <option value="">Select match loser...</option>
+                            {players.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                          </select>
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">League Standings Allocation Points</label>
+                          <input type="number" className="form-input" min="1" max="5" value={allocatedPoints} onChange={e => setAllocatedPoints(e.target.value)} />
+                        </div>
+                        <button type="submit" className="btn btn-primary btn-block">Log Results to Scoreboard</button>
+                      </form>
+                    </div>
+                  </div>
+
+                  {/* Micro Quick Standings Panel View */}
+                  <div className="card">
+                    <div className="card-header">
+                      <div className="card-title">📈 Top Ranked Competitors</div>
+                      <button className="btn btn-outline btn-xs" onClick={() => setCurrentTab('standings')}>View Full</button>
+                    </div>
+                    <div className="card-body" style={{ padding: '0.5rem' }}>
+                      <table className="standings-table">
+                        <tbody>
+                          {sortedStandings.slice(0, 5).map((row, idx) => (
+                            <tr key={row.id}>
+                              <td style={{ padding: '8px 10px' }}>
+                                <span className={`rank-pip ${idx === 0 ? 'rank-pip-gold' : 'rank-pip-gray'}`}>{idx + 1}</span>
+                              </td>
+                              <td style={{ fontWeight: 500, padding: '8px 10px' }}>{pObj(row.id, players).name}</td>
+                              <td style={{ textAlign: 'right', color: 'var(--fern)', fontWeight: 'bold', padding: '8px 10px' }}>{row.points} pts</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 2: FULL STANDINGS REPORT VIEW */}
+            {currentTab === 'standings' && (
+              <div className="card">
+                <div className="card-header"><div className="card-title">📈 Current Official Season Standings</div></div>
+                <div className="card-body" style={{ overflowX: 'auto', padding: 0 }}>
+                  <table className="standings-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: 70 }}>Rank</th>
+                        <th>Player</th>
+                        <th style={{ textAlign: 'center' }}>Wins</th>
+                        <th style={{ textAlign: 'center' }}>Losses</th>
+                        <th style={{ textAlign: 'center' }}>Win Ratio</th>
+                        <th style={{ textAlign: 'center' }}>Points</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedStandings.map((row, idx) => {
+                        const totalMatches = row.wins + row.losses;
+                        const winRate = totalMatches > 0 ? Math.round((row.wins / totalMatches) * 100) : 0;
+                        return (
+                          <tr key={row.id} style={{ background: row.id === user.id ? 'var(--gold-xl)' : 'transparent' }}>
+                            <td><div className={`rank-pip ${idx < 3 ? 'rank-pip-gold' : 'rank-pip-gray'}`}>{idx + 1}</div></td>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
+                                <Avatar pid={row.id} size={26} players={players} />
+                                <span>{pObj(row.id, players).name} {row.id === user.id && '(You)'}</span>
+                              </div>
+                            </td>
+                            <td style={{ textAlign: 'center', color: 'var(--fern)', fontWeight: '600' }}>{row.wins}</td>
+                            <td style={{ textAlign: 'center', color: 'var(--red)' }}>{row.losses}</td>
+                            <td style={{ textAlign: 'center' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+                                <div className="win-bar-wrap"><div className="win-bar" style={{ width: `${winRate}%` }}></div></div>
+                                <span style={{ fontSize: '12px', minWidth: '30px' }}>{winRate}%</span>
+                              </div>
+                            </td>
+                            <td style={{ textAlign: 'center', fontWeight: 'bold', color: 'var(--forest)' }}>{row.points}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 3: FULL COMPLETE TRACKED SCHEDULE PREVIEW */}
+            {currentTab === 'schedule' && (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h2 className="page-title">{currentWeekData.label}</h2>
+                </div>
                 
-                <label className="sub-checkbox-label">
-                  <input 
-                    type="checkbox" 
-                    checked={subChecked} 
-                    onChange={(e) => setSubChecked(e.target.checked)} 
-                  />
-                  I need a substitute player for this match. Send out an automatic notification broadcast to all qualified off-duty league players.
-                </label>
+                <div className="three-col">
+                  {currentWeekData.courts.map(c => {
+                    const [p0, p1, p2, p3] = c.players;
+                    return (
+                      <div className="court-card" key={c.num}>
+                        <div className="court-header">
+                          <span className="court-name">Court Assignment {c.num}</span>
+                          <span className="court-time">🕒 {c.time}</span>
+                        </div>
+                        <div className="card-body">
+                          <div className="court-field clearfix">
+                            <div className="court-net"></div>
+                            
+                            {/* Team Left Side (Players 1 & 2) */}
+                            <div className="court-team left">
+                              <div className={`court-p ${[p0, p1].includes(user.id) ? 'me' : ''}`}>
+                                <div className="court-p-av" style={{ background: pColor(p0) }}>{initials(pName(p0, players))}</div>
+                                <div className="court-p-name">{pFirst(p0, players)}</div>
+                              </div>
+                              <div className={`court-p ${[p0, p1].includes(user.id) ? 'me' : ''}`}>
+                                <div className="court-p-av" style={{ background: pColor(p1) }}>{initials(pName(p1, players))}</div>
+                                <div className="court-p-name">{pFirst(p1, players)}</div>
+                              </div>
+                            </div>
 
-                {subChecked && (
-                  <button 
-                    className="action-btn btn-green" 
-                    onClick={handleProcessSubRequest}
-                    disabled={isSendingEmail}
-                  >
-                    {isSendingEmail ? "Processing Broadcast..." : "Confirm & Dispatch Email Notification"}
-                  </button>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="app-card">
-              <div className="card-title">Match Schedule</div>
-              <p>You have an official bye week. No matches listed.</p>
-            </div>
-          )}
+                            {/* Team Right Side (Players 3 & 4) */}
+                            <div className="court-team right">
+                              <div className={`court-p ${[p2, p3].includes(user.id) ? 'me' : ''}`}>
+                                <div className="court-p-av" style={{ background: pColor(p2) }}>{initials(pName(p2, players))}</div>
+                                <div className="court-p-name">{pFirst(p2, players)}</div>
+                              </div>
+                              <div className={`court-p ${[p2, p3].includes(user.id) ? 'me' : ''}`}>
+                                <div className="court-p-av" style={{ background: pColor(p3) }}>{initials(pName(p3, players))}</div>
+                                <div className="court-p-name">{pFirst(p3, players)}</div>
+                              </div>
+                            </div>
+                          </div>
 
-          {/* FEATURE 2: INTERACTIVE MATCH SCOREBOARD RECORDER */}
-          <div className="app-card">
-            <div className="card-title">📊 Record Match Results</div>
-            <form onSubmit={handleLogMatchScore}>
-              <div className="score-form-grid">
-                <div className="form-group">
-                  <label>Winning Player</label>
-                  <select value={winnerId} onChange={e => setWinnerId(e.target.value)}>
-                    <option value="">Select winner...</option>
-                    {players.map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
+                          {isAdmin && (
+                            <button className="btn btn-outline btn-xs btn-block" style={{ marginTop: '5px' }} onClick={() => {
+                              setSelectedPresetCourt(c);
+                              setShowPresetModal(true);
+                            }}>✏️ Edit Assignments</button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="form-group">
-                  <label>Losing Player</label>
-                  <select value={loserId} onChange={e => setLoserId(e.target.value)}>
-                    <option value="">Select loser...</option>
-                    {players.map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
+              </div>
+            )}
+
+            {/* VIEW 4: ADMIN ADVANCED SYSTEM RUNNER */}
+            {currentTab === 'admin' && isAdmin && (
+              <div>
+                <h2 className="page-title">Admin Management Engine</h2>
+                <p className="page-subtitle">Configure roster, import season historical ranks, and execute auto serpentine mapping algorithms.</p>
+
+                <div className="admin-toolbar">
+                  <span className="admin-toolbar-label">Serpentine Scheduler Tools</span>
+                  <div className="admin-toolbar-sep"></div>
+                  <button className="btn btn-gold btn-sm" onClick={handleInitiateAutoAssign}>⚡ Run Serpentine Automated Assign</button>
+                  <button className="btn btn-outline btn-sm" style={{ background: 'transparent', color: '#fff' }} onClick={() => setShowLastSeasonModal(true)}>📥 Import Historical Season Ranks</button>
+                </div>
+
+                <div className="card">
+                  <div className="card-header"><div className="card-title">👥 Roster Status and Active Tracking Matrix</div></div>
+                  <div className="card-body">
+                    <div className="players-grid">
+                      {players.map(p => (
+                        <div className="player-card" key={p.id} style={{ opacity: p.active ? 1 : 0.5 }}>
+                          <Avatar pid={p.id} size={36} players={players} />
+                          <div className="player-card-info">
+                            <div className="player-card-name">{p.name}</div>
+                            <div className="player-card-meta">{p.email} · {p.phone}</div>
+                          </div>
+                          <div>
+                            <button className={`btn btn-xs ${p.active ? 'btn-primary' : 'btn-outline'}`} onClick={() => {
+                              setPlayers(players.map(item => item.id === p.id ? { ...item, active: !item.active } : item));
+                            }}>{p.active ? 'Active' : 'Bench'}</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <div className="form-group">
-                <label>League Points Earned (Winner)</label>
-                <input 
-                  type="number" 
-                  min="1" 
-                  max="5" 
-                  value={pointsEarned} 
-                  onChange={e => setPointsEarned(e.target.value)} 
-                />
-              </div>
-
-              <button type="submit" className="action-btn btn-green">
-                Log Results to Scoreboard
-              </button>
-            </form>
+            )}
           </div>
 
-          {/* FEATURE 3: LIVE LEAGUE STANDINGS TABLE */}
-          <div className="app-card" style={{overflowX: 'auto'}}>
-            <div className="card-title">📈 Current League Standings</div>
-            <table>
+          {/* MODAL 1: LAST SEASON IMPORT COMPONENT INTERFACE */}
+          {showLastSeasonModal && (
+            <LastSeasonModal 
+              players={players} 
+              lastSeason={lastSeason} 
+              onSave={(updatedRanks) => {
+                setLastSeason(updatedRanks);
+                setShowLastSeasonModal(false);
+                alert("Rankings successfully recorded into tracking storage memory.");
+              }} 
+              onClose={() => setShowLastSeasonModal(false)} 
+            />
+          )}
+
+          {/* MODAL 2: AUTO ASSIGN PREVIEW COMPONENT INTERFACE */}
+          {showPreviewModal && (
+            <AutoAssignPreviewModal 
+              proposed={proposedCourts} 
+              players={players} 
+              lastSeason={lastSeason} 
+              standings={standings} 
+              weekLabel={currentWeekData.label} 
+              currentTimes={['7:00 PM', '7:00 PM', '8:30 PM']} 
+              onConfirm={(finalCourts) => {
+                setSchedule([{ ...currentWeekData, courts: finalCourts }]);
+                setShowPreviewModal(false);
+                alert("Serpentine balanced pairings applied directly to current layout!");
+              }} 
+              onClose={() => setShowPreviewModal(false)} 
+            />
+          )}
+
+          {/* MODAL 3: MANUAL PRESET EDIT ACTION DIALOG CONTAINER */}
+          {showPresetModal && selectedPresetCourt && (
+            <PresetEditModal 
+              court={selectedPresetCourt} 
+              players={players} 
+              onSave={(mutatedCourt) => {
+                const nextCourts = currentWeekData.courts.map(c => c.num === mutatedCourt.num ? mutatedCourt : c);
+                setSchedule([{ ...currentWeekData, courts: nextCourts }]);
+                setShowPresetModal(false);
+                setSelectedPresetCourt(null);
+              }} 
+              onClose={() => {
+                setShowPresetModal(false);
+                setSelectedPresetCourt(null);
+              }} 
+            />
+          )}
+        </div>
+      );
+    }
+
+    /* ── SUBORDINATE MODAL COMPONENTS IMPLEMENTATION ── */
+    function LoginPage({ onLogin }) {
+      const [step, setStep] = useState('main');
+      const [selUser, setSelUser] = useState(null);
+      const [phone, setPhone] = useState('');
+      const [smsOpt, setSmsOpt] = useState(true);
+
+      return (
+        <div className="login-page">
+          {step === 'main' && (
+            <div className="login-card">
+              <div className="login-logo">🎾</div>
+              <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--forest)', marginBottom: '.3rem' }}>Glenview Tennis League</h1>
+              <p style={{ fontSize: '.9rem', color: 'var(--slate)', marginBottom: '1.75rem' }}>Sign in to track court allocations, send substitute alerts, and record scores.</p>
+              <button className="btn-google" onClick={() => setStep('picker')}>Sign in with Google Account</button>
+            </div>
+          )}
+          {step === 'picker' && (
+            <div className="google-picker">
+              <div className="google-picker-header">Choose simulation identity profile</div>
+              <div className="google-picker-body">
+                {MOCK_ACCOUNTS.map(u => (
+                  <div key={u.id} className="google-user-opt" onClick={() => { setSelUser(u); setPhone(u.phone || ''); setStep('phone'); }}>
+                    <div className="avatar" style={{ width: 38, height: 38, background: u.id === 0 ? 'var(--forest)' : pColor(u.id), fontSize: 13 }}>{initials(u.name)}</div>
+                    <div>
+                      <div style={{ fontWeight: 500, fontSize: '.9rem' }}>{u.name} {u.role === 'admin' && <span className="admin-chip" style={{ marginLeft: 8 }}>ADMIN</span>}</div>
+                      <div style={{ fontSize: 12, color: 'var(--mist)' }}>{u.email}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {step === 'phone' && selUser && (
+            <div className="login-card" style={{ textAlign: 'left' }}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--forest)', marginBottom: '.35rem' }}>Setup Notification Rules</h2>
+              <div className="form-group">
+                <label className="form-label">Mobile Phone Number</label>
+                <input className="form-input" placeholder="(847) 555-0000" value={phone} onChange={e => setPhone(e.target.value)} />
+              </div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: '1rem' }}>
+                <input type="checkbox" checked={smsOpt} onChange={e => setSmsOpt(e.target.checked)} />
+                <label style={{ fontSize: '14px' }}>Subscribe to SMS automated alerts</label>
+              </div>
+              <button className="btn btn-primary btn-block" onClick={() => onLogin({ ...selUser, phone, smsEnabled: smsOpt })}>Enter League Portal</button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function LastSeasonModal({ players, lastSeason, onSave, onClose }) {
+      const active = players.filter(p => p.active);
+      const [ranks, setRanks] = useState(() => {
+        const m = {};
+        active.forEach(p => {
+          const ex = lastSeason.find(x => x.id === p.id);
+          m[p.id] = { rank: ex ? ex.rank : '', wins: ex ? ex.wins : '', losses: ex ? ex.losses : '' };
+        });
+        return m;
+      });
+
+      const updateField = (id, field, val) => {
+        setRanks(prev => ({ ...prev, [id]: { ...prev[id], [field]: val } }));
+      };
+
+      return (
+        <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
+          <div className="modal" style={{ maxWidth: 560 }}>
+            <h3 style={{ marginBottom: '10px', color: 'var(--forest)' }}>📥 Import Last Season Historical Rankings</h3>
+            <table className="preset-table" style={{ marginBottom: '1rem' }}>
               <thead>
                 <tr>
-                  <th>Player Rank</th>
-                  <th style={{textAlign: 'center'}}>Wins</th>
-                  <th style={{textAlign: 'center'}}>Losses</th>
-                  <th style={{textAlign: 'center'}}>Points</th>
+                  <th>Player</th>
+                  <th>Rank (1-12)</th>
+                  <th>Wins</th>
+                  <th>Losses</th>
                 </tr>
               </thead>
               <tbody>
-                {sortedStandingsList.map((player, index) => (
-                  <tr key={player.id}>
-                    <td>
-                      <span className="rank-number">#{index + 1}</span>
-                      {player.name} {player.id === currentUserObj.id && " (You)"}
-                    </td>
-                    <td style={{textAlign: 'center'}}>{player.wins}</td>
-                    <td style={{textAlign: 'center'}}>{player.losses}</td>
-                    <td style={{textAlign: 'center', fontWeight: 'bold', color: 'var(--primary-green)'}}>
-                      {player.points}
-                    </td>
+                {active.map(p => (
+                  <tr key={p.id}>
+                    <td>{p.name}</td>
+                    <td><input type="number" className="form-input" style={{ width: '60px', padding: '4px' }} value={ranks[p.id]?.rank || ''} onChange={e => updateField(p.id, 'rank', e.target.value)} /></td>
+                    <td><input type="number" className="form-input" style={{ width: '60px', padding: '4px' }} value={ranks[p.id]?.wins || ''} onChange={e => updateField(p.id, 'wins', e.target.value)} /></td>
+                    <td><input type="number" className="form-input" style={{ width: '60px', padding: '4px' }} value={ranks[p.id]?.losses || ''} onChange={e => updateField(p.id, 'losses', e.target.value)} /></td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => {
+                const payload = active.map(p => ({
+                  id: p.id,
+                  rank: parseInt(ranks[p.id]?.rank) || 0,
+                  wins: parseInt(ranks[p.id]?.wins) || 0,
+                  losses: parseInt(ranks[p.id]?.losses) || 0
+                }));
+                onSave(payload);
+              }}>Save Changes</button>
+              <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+            </div>
           </div>
+        </div>
+      );
+    }
 
+    function AutoAssignPreviewModal({ proposed, players, weekLabel, onConfirm, onClose }) {
+      const [courts, setCourts] = useState([...proposed]);
+      const setSlot = (cIdx, sIdx, val) => {
+        setCourts(prev => prev.map((c, i) => i !== cIdx ? c : { ...c, players: c.players.map((p, s) => s === sIdx ? parseInt(val) : p) }));
+      };
+
+      return (
+        <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
+          <div className="modal" style={{ maxWidth: 620 }}>
+            <h3 style={{ marginBottom: '10px', color: 'var(--forest)' }}>⚡ Serpentine Distribution Balanced Preview</h3>
+            <p style={{ fontSize: '13px', color: 'var(--slate)', marginBottom: '1rem' }}>Review serpentine calculated pairings before rendering changes live.</p>
+            {courts.map((c, ci) => (
+              <div className="preview-court" key={c.num}>
+                <div className="preview-court-head">
+                  <span>Court Assignment {c.num} Allocation Slot</span>
+                  <span>{c.time}</span>
+                </div>
+                <div className="preview-court-body">
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+                    <div>
+                      <div className="preview-team-label">Team 1</div>
+                      <div>🎾 {pFirst(c.players[0], players)} & {pFirst(c.players[1], players)}</div>
+                    </div>
+                    <div>
+                      <div className="preview-team-label">Team 2</div>
+                      <div>🎾 {pFirst(c.players[2], players)} & {pFirst(c.players[3], players)}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 5 }}>
+                    {c.players.map((pid, si) => (
+                      <select key={si} className="form-select" style={{ padding: '3px', fontSize: '11px' }} value={pid} onChange={e => setSlot(ci, si, e.target.value)}>
+                        {players.filter(p => p.active).map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      </select>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div style={{ display: 'flex', gap: 10, marginTop: '1rem' }}>
+              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => onConfirm(courts)}>Apply Structural Layout</button>
+              <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function PresetEditModal({ court, players, onSave, onClose }) {
+      const [slots, setSlots] = useState([...court.players]);
+      const [time, setTime] = useState(court.time);
+
+      const changeSlot = (idx, val) => {
+        setSlots(slots.map((s, i) => i === idx ? parseInt(val) : s));
+      };
+
+      return (
+        <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
+          <div className="modal">
+            <h3 style={{ marginBottom: '15px', color: 'var(--forest)' }}>✏️ Override Court {court.num} Lineup</h3>
+            <div className="form-group">
+              <label className="form-label">Time Window Assignment Slot</label>
+              <select className="form-select" value={time} onChange={e => setTime(e.target.value)}>
+                <option value="7:00 PM">7:00 PM</option>
+                <option value="8:30 PM">8:30 PM</option>
+              </select>
+            </div>
+            <div className="section-label">Allocated Position Placement Options</div>
+            {slots.map((pid, idx) => (
+              <div className="form-group" key={idx}>
+                <label className="form-label">Court Position Slot {idx + 1}</label>
+                <select className="form-select" value={pid} onChange={e => changeSlot(idx, e.target.value)}>
+                  {players.filter(p => p.active).map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+              </div>
+            ))}
+            <div style={{ display: 'flex', gap: 10, marginTop: '1.5rem' }}>
+              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => {
+                if (new Set(slots).size < 4) {
+                  alert("Lineup assignment error. Duplicated positions found.");
+                  return;
+                }
+                onSave({ ...court, players: slots, time });
+              }}>Apply Form Save</button>
+              <button className="btn btn-outline" onClick={onClose}>Cancel Override</button>
+            </div>
+          </div>
         </div>
       );
     }
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<TennisLeagueApp />);
+    root.render(<GlenviewTennisApp />);
   </script>
 </body>
 </html>
