@@ -4,19 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
-  <!-- PWA / App Tags -->
   <link rel="manifest" href="manifest.json" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="LeagueApp">
   <title>Tennis League Dashboard</title>
 
-  <!-- React & Babel Scripts -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
   
-  <!-- EmailJS Script -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
   <style>
@@ -160,6 +157,52 @@
       color: #888;
       cursor: not-allowed;
     }
+
+    /* Scoreboard Styles */
+    .scoreboard-section {
+      margin-top: 40px;
+    }
+
+    .scoreboard-title {
+      color: var(--gold);
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+    }
+
+    .table-container {
+      background-color: var(--card-bg);
+      border-radius: var(--r-md);
+      padding: 15px;
+      border: 1px solid #333;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      border-bottom: 2px solid #333;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      padding: 10px;
+    }
+
+    td {
+      border-bottom: 1px solid #222;
+      padding: 12px 10px;
+      font-size: 0.95rem;
+    }
+
+    .rank {
+      color: var(--gold);
+      font-weight: bold;
+      margin-right: 8px;
+      display: inline-block;
+      width: 15px;
+    }
   </style>
 </head>
 <body>
@@ -168,28 +211,24 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // --- MOCK DATA ---
+    // --- PLAYER & LEAGUE DATA ---
     const PLAYERS = [
-      { id: 1, name: "James Anderson", email: "james@example.com" },
-      { id: 2, name: "Sarah Jenkins", email: "sarah@example.com" },
-      { id: 3, name: "Mike Chen", email: "mike@example.com" },
-      { id: 4, name: "David Kim", email: "david@example.com" },
-      { id: 5, name: "Emma Wilson", email: "emma@example.com" },
-      // Add your actual players here
+      { id: 1, name: "James Anderson", email: "james@example.com", wins: 4, losses: 1, points: 12 },
+      { id: 2, name: "Sarah Jenkins", email: "sarah@example.com", wins: 3, losses: 2, points: 9 },
+      { id: 3, name: "Mike Chen", email: "mike@example.com", wins: 2, losses: 3, points: 6 },
+      { id: 4, name: "David Kim", email: "david@example.com", wins: 1, losses: 4, points: 3 },
+      { id: 5, name: "Emma Wilson", email: "emma@example.com", wins: 5, losses: 0, points: 15 },
     ];
 
-    // Simulating the logged-in user
-    const CURRENT_USER = PLAYERS[0]; // Set to James for testing
+    const CURRENT_USER = PLAYERS[0]; // Tracking "James" as the user
 
     const INIT_SCHEDULE = {
       label: "Week 1",
       courts: [
-        { num: 1, time: "7:00 PM", players: [1, 2, 3, 4] },
-        { num: 2, time: "7:00 PM", players: [5, 6, 7, 8] } // Assuming IDs 5-8 exist
+        { num: 1, time: "7:00 PM", players: [1, 2, 3, 4] }
       ]
     };
 
-    // --- HELPER FUNCTIONS ---
     const getFirstName = (id, players) => {
       const p = players.find(p => p.id === id);
       return p ? p.name.split(" ")[0] : "Unknown";
@@ -201,27 +240,28 @@
       return <div className="avatar">{initial}</div>;
     };
 
-    // --- MAIN APP COMPONENT ---
+    // --- MAIN APP ---
     function App() {
       const [isSubConfirmed, setIsSubConfirmed] = useState(false);
       const [isSendingMsg, setIsSendingMsg] = useState(false);
-      const [messageStatus, setMessageStatus] = useState(null); // 'success' or 'error'
+      const [messageStatus, setMessageStatus] = useState(null);
 
-      // Initialize EmailJS
       useEffect(() => {
-        emailjs.init("YOUR_PUBLIC_KEY_HERE"); // <-- REPLACE THIS
+        // Substitute your live EmailJS Public Key here when ready
+        emailjs.init("YOUR_PUBLIC_KEY_HERE"); 
       }, []);
 
-      // Find the current user's match
       const upcomingWeek = INIT_SCHEDULE;
       const myCourt = upcomingWeek.courts.find(c => c.players.includes(CURRENT_USER.id));
+
+      // Sorting players dynamically by points to display standings ranking
+      const sortedStandings = [...PLAYERS].sort((a, b) => b.points - a.points);
 
       const handleSubRequest = async () => {
         if (!myCourt) return;
         setIsSendingMsg(true);
         setMessageStatus(null);
 
-        // 1. Find all players playing at the SAME time as this match
         const busyPlayerIds = new Set();
         upcomingWeek.courts.forEach(c => {
           if (c.time === myCourt.time) {
@@ -229,7 +269,6 @@
           }
         });
 
-        // 2. Filter the master player list for available subs
         const availableSubs = PLAYERS.filter(p => !busyPlayerIds.has(p.id) && p.id !== CURRENT_USER.id);
         const subEmails = availableSubs.map(p => p.email).join(",");
 
@@ -239,11 +278,10 @@
           return;
         }
 
-        // 3. Send via EmailJS
         try {
           await emailjs.send(
-            "YOUR_SERVICE_ID_HERE",  // <-- REPLACE THIS
-            "YOUR_TEMPLATE_ID_HERE", // <-- REPLACE THIS
+            "YOUR_SERVICE_ID_HERE",  
+            "YOUR_TEMPLATE_ID_HERE", 
             {
               player_name: CURRENT_USER.name,
               court_num: myCourt.num,
@@ -252,11 +290,10 @@
               reply_to: CURRENT_USER.email
             }
           );
-          
           setMessageStatus('success');
-          setIsSubConfirmed(false); // Reset the checkbox
+          setIsSubConfirmed(false);
         } catch (error) {
-          console.error("Failed to send email:", error);
+          console.error("EmailJS Error:", error);
           setMessageStatus('error');
         } finally {
           setIsSendingMsg(false);
@@ -267,6 +304,7 @@
         <div>
           <h1>🏆 League Dashboard</h1>
 
+          {/* 1. MATCH SCHEDULE CARD */}
           {myCourt ? (
             <div className="your-court-hero">
               <div className="your-court-label">Your Next Match</div>
@@ -282,35 +320,18 @@
                 ))}
               </div>
 
-              {/* Sub Request Area */}
+              {/* Sub Request Box */}
               <div className="sub-section">
-                {messageStatus === 'success' && (
-                  <div style={{color: '#4ade80', marginBottom: '15px', fontWeight: 'bold'}}>
-                    ✓ Sub request sent successfully!
-                  </div>
-                )}
-                
-                {messageStatus === 'error' && (
-                  <div style={{color: '#f87171', marginBottom: '15px', fontWeight: 'bold'}}>
-                    ✗ Failed to send. Check your EmailJS keys.
-                  </div>
-                )}
+                {messageStatus === 'success' && <div style={{color: '#4ade80', marginBottom: '15px', fontWeight: 'bold'}}>✓ Sub request sent successfully!</div>}
+                {messageStatus === 'error' && <div style={{color: '#f87171', marginBottom: '15px', fontWeight: 'bold'}}>✗ Failed to send. Check EmailJS keys.</div>}
 
                 <label className="checkbox-label">
-                  <input 
-                    type="checkbox" 
-                    checked={isSubConfirmed} 
-                    onChange={(e) => setIsSubConfirmed(e.target.checked)} 
-                  />
+                  <input type="checkbox" checked={isSubConfirmed} onChange={(e) => setIsSubConfirmed(e.target.checked)} />
                   I have attempted to find a sub directly and would like to email the available league players.
                 </label>
 
                 {isSubConfirmed && (
-                  <button 
-                    className="btn btn-gold" 
-                    onClick={handleSubRequest}
-                    disabled={isSendingMsg}
-                  >
+                  <button className="btn btn-gold" onClick={handleSubRequest} disabled={isSendingMsg}>
                     {isSendingMsg ? 'Sending Email...' : 'Confirm & Send Email'}
                   </button>
                 )}
@@ -319,9 +340,38 @@
           ) : (
             <div className="your-court-hero">
               <div className="your-court-title">No Match Scheduled</div>
-              <div className="your-court-label" style={{marginTop: '10px'}}>You have a bye this week!</div>
             </div>
           )}
+
+          {/* 2. LEAGUE STANDINGS / SCOREBOARD */}
+          <div className="scoreboard-section">
+            <h2 className="scoreboard-title">📊 League Standings</h2>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Player</th>
+                    <th style={{textAlign: 'center'}}>W</th>
+                    <th style={{textAlign: 'center'}}>L</th>
+                    <th style={{textAlign: 'center'}}>Pts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedStandings.map((p, index) => (
+                    <tr key={p.id}>
+                      <td>
+                        <span className="rank">{index + 1}</span>
+                        {p.name} {p.id === CURRENT_USER.id && "(You)"}
+                      </td>
+                      <td style={{textAlign: 'center'}}>{p.wins}</td>
+                      <td style={{textAlign: 'center'}}>{p.losses}</td>
+                      <td style={{textAlign: 'center', fontWeight: 'bold', color: 'var(--gold)'}}>{p.points}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
         </div>
       );
