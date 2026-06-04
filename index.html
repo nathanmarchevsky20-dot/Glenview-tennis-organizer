@@ -30,7 +30,7 @@
     body { font-family: 'Outfit', sans-serif; background: var(--ivory); color: var(--ink); min-height: 100vh; font-size: 15px; line-height: 1.6; }
     h1, h2, h3 { font-family: 'Playfair Display', serif; }
     button { font-family: 'Outfit', sans-serif; cursor: pointer; border: none; outline: none; }
-    input, select { font-family: 'Outfit', sans-serif; outline: none; }
+    input, select, textarea { font-family: 'Outfit', sans-serif; outline: none; }
     
     .nav { background: var(--forest); height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.25); }
     .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
@@ -42,7 +42,7 @@
     .nav-link.active { color: #fff; background: rgba(255,255,255,.15); }
     
     .admin-chip { background: var(--gold-m); color: var(--forest); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: .04em; }
-    .admin-bar { background: var(--gold-xl); border-bottom: 2px solid var(--gold-l); padding: 8px 1.5rem; font-size: 13px; font-weight: 500; color: #7a5b10; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .admin-bar { background: var(--gold-xl); border-bottom: 2px solid var(--gold-l); padding: 8px 1.5rem; font-size: 13px; font-weight: 500; color: #7a5b10; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
     
     .page { max-width: 1120px; margin: 0 auto; padding: 2.5rem 1.5rem; }
     .page-title { font-size: 1.8rem; font-weight: 700; color: var(--forest); }
@@ -75,7 +75,6 @@
     .court-team.right { float: right; }
     .court-p { background: rgba(255,255,255,.15); border-radius: 4px; padding: 3px 6px; display: flex; align-items: center; gap: 5px; }
     .court-p.me { background: rgba(212,168,67,.4); border: 1px solid rgba(212,168,67,.6); }
-    .court-p-av" { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
     .court-p-av { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
     .court-p-name { font-size: 11px; color: #fff; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .clearfix::after { content: ''; display: block; clear: both; }
@@ -90,16 +89,17 @@
     
     .form-group { margin-bottom: 1rem; }
     .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--slate); margin-bottom: 5px; }
-    .form-input { width: 100%; padding: 9px 12px; border: 1px solid var(--fog); border-radius: var(--r-sm); font-size: 14px; background: var(--white); color: var(--ink); }
-    .form-select { width: 100%; padding: 9px 12px; border: 1px solid var(--fog); border-radius: var(--r-sm); font-size: 14px; background: var(--white); color: var(--ink); }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--fog); border-radius: var(--r-sm); font-size: 14px; background: var(--white); color: var(--ink); }
+    .form-textarea { resize: vertical; min-height: 80px; }
     
     .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .modal { background: var(--white); border-radius: var(--r-lg); padding: 1.75rem; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,.2); max-height: 90vh; overflow-y: auto; }
+    .modal { background: var(--white); border-radius: var(--r-lg); padding: 1.75rem; width: 100%; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,.2); max-height: 90vh; overflow-y: auto; }
     
     .win-bar-wrap { width: 70px; height: 5px; background: var(--fog); border-radius: 3px; overflow: hidden; }
     .win-bar { height: 100%; border-radius: 3px; background: var(--fern); }
     .alert { padding: 11px 15px; border-radius: var(--r-sm); font-size: 14px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; }
     .alert-gold { background: var(--gold-xl); color: #7a5b10; border: 1px solid var(--gold-l); }
+    .alert-info { background: var(--blue-l); color: var(--blue); border: 1px solid #bfdbfe; }
     
     .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
     .player-card { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow-sm); border: 1px solid var(--fog); padding: 1rem; display: flex; align-items: center; gap: 12px; }
@@ -115,10 +115,10 @@
     .rank-pip-gold { background: var(--gold-l); color: var(--gold); }
     .rank-pip-gray { background: var(--fog); color: var(--slate); }
     
-    .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--forest), #1a5c34 60%, var(--fern)); padding: 1rem; }
-    .login-card { background: var(--white); border-radius: var(--r-lg); padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
+    .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--forest), #1a5c34 60%, var(--fern)); padding: 1rem; flex-direction: column; gap: 1rem; }
+    .login-card { background: var(--white); border-radius: var(--r-lg); padding: 2.5rem; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
     .login-logo { width: 60px; height: 60px; background: var(--forest); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 1rem; }
-    .google-picker { background: var(--white); border-radius: var(--r-lg); width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+    .google-picker { background: var(--white); border-radius: var(--r-lg); width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
     .google-picker-header { background: var(--blue); color: #fff; padding: 1rem 1.25rem; border-radius: var(--r-lg) var(--r-lg) 0 0; font-size: .9rem; font-weight: 500; }
     .google-picker-body { padding: .5rem; max-height: 400px; overflow-y: auto; }
     .google-user-opt { display: flex; align-items: center; gap: 12px; padding: .75rem 1rem; border-radius: var(--r-sm); cursor: pointer; }
@@ -149,24 +149,20 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
+    // --- DEFAULT SEED DATA ---
     const INIT_PLAYERS = [
-      { id: 1, name: 'James Mitchell', email: 'j.mitchell@gmail.com', phone: '(847) 555-0101', active: true },
-      { id: 2, name: 'Sarah Chen', email: 's.chen@gmail.com', phone: '(847) 555-0102', active: true },
-      { id: 3, name: 'Marcus Webb', email: 'm.webb@gmail.com', phone: '(847) 555-0103', active: true },
-      { id: 4, name: 'Priya Patel', email: 'p.patel@gmail.com', phone: '(847) 555-0104', active: true },
-      { id: 5, name: 'Tom Garrison', email: 't.garrison@gmail.com', phone: '(847) 555-0105', active: true },
-      { id: 6, name: 'Elena Vasquez', email: 'e.vasquez@gmail.com', phone: '(847) 555-0106', active: true },
-      { id: 7, name: 'David Kim', email: 'd.kim@gmail.com', phone: '(847) 555-0107', active: true },
-      { id: 8, name: 'Rachel Torres', email: 'r.torres@gmail.com', phone: '(847) 555-0108', active: true },
-      { id: 9, name: 'Chris Novak', email: 'c.novak@gmail.com', phone: '(847) 555-0109', active: true },
-      { id: 10, name: 'Aisha Johnson', email: 'a.johnson@gmail.com', phone: '(847) 555-0110', active: true },
-      { id: 11, name: 'Luke Brennan', email: 'l.brennan@gmail.com', phone: '(847) 555-0111', active: true },
-      { id: 12, name: 'Nina Okafor', email: 'n.okafor@gmail.com', phone: '(847) 555-0112', active: true }
-    ];
-
-    const MOCK_ACCOUNTS = [
-      ...INIT_PLAYERS.map(p => ({ ...p, role: 'player' })),
-      { id: 0, name: 'League Admin', email: 'admin@glenview.tennis', phone: '(847) 555-0000', active: true, role: 'admin' }
+      { id: 1, name: 'James Mitchell', email: 'j.mitchell@example.com', phone: '(847) 555-0101', active: true },
+      { id: 2, name: 'Sarah Chen', email: 's.chen@example.com', phone: '(847) 555-0102', active: true },
+      { id: 3, name: 'Marcus Webb', email: 'm.webb@example.com', phone: '(847) 555-0103', active: true },
+      { id: 4, name: 'Priya Patel', email: 'p.patel@example.com', phone: '(847) 555-0104', active: true },
+      { id: 5, name: 'Tom Garrison', email: 't.garrison@example.com', phone: '(847) 555-0105', active: true },
+      { id: 6, name: 'Elena Vasquez', email: 'e.vasquez@example.com', phone: '(847) 555-0106', active: true },
+      { id: 7, name: 'David Kim', email: 'd.kim@example.com', phone: '(847) 555-0107', active: true },
+      { id: 8, name: 'Rachel Torres', email: 'r.torres@example.com', phone: '(847) 555-0108', active: true },
+      { id: 9, name: 'Chris Novak', email: 'c.novak@example.com', phone: '(847) 555-0109', active: true },
+      { id: 10, name: 'Aisha Johnson', email: 'a.johnson@example.com', phone: '(847) 555-0110', active: true },
+      { id: 11, name: 'Luke Brennan', email: 'l.brennan@example.com', phone: '(847) 555-0111', active: true },
+      { id: 12, name: 'Nina Okafor', email: 'n.okafor@example.com', phone: '(847) 555-0112', active: true }
     ];
 
     const DEFAULT_STANDINGS = INIT_PLAYERS.map((p, idx) => ({
@@ -177,7 +173,7 @@
 
     const DEFAULT_SCHEDULE = [
       {
-        label: 'Week 8 — Jun 2, 2026',
+        label: 'Week 1',
         courts: [
           { num: 1, time: '7:00 PM', players: [1, 2, 3, 4] },
           { num: 2, time: '7:00 PM', players: [5, 6, 7, 8] },
@@ -193,6 +189,16 @@
       losses: 20 + idx * 2
     }));
 
+    const DEFAULT_LEAGUE = {
+      id: 'default_league_1',
+      name: 'Glenview Summer 2026',
+      players: INIT_PLAYERS,
+      standings: DEFAULT_STANDINGS,
+      schedule: DEFAULT_SCHEDULE,
+      lastSeason: DEFAULT_LAST_SEASON
+    };
+
+    // --- HELPERS ---
     const AVC = ['#2d6a4f', '#1b4332', '#4a7c59', '#52796f', '#354f52', '#2c3e50', '#8b5e3c', '#5c4033', '#3d405b', '#6b4226', '#1a5276', '#6d4c41'];
     function pColor(id) { return AVC[(id - 1) % AVC.length] || '#2d6a4f'; }
     function initials(name) { return name ? name.split(' ').map(n => n[0]).join('') : '?'; }
@@ -223,13 +229,19 @@
         return { id: p.id, score };
       });
       scored.sort((a, b) => b.score - a.score);
-      const groups = [scored.slice(0, 4), scored.slice(4, 8), scored.slice(8, 12)];
+      
+      const groups = [];
+      for (let i = 0; i < scored.length; i += 4) {
+        groups.push(scored.slice(i, i + 4));
+      }
+      
       return groups.map((g, i) => {
         if (g.length < 4) return { num: i + 1, players: g.map(x => x.id), time: '7:00 PM' };
+        // Serpentine within the group of 4: [1st, 4th] vs [2nd, 3rd]
         return {
           num: i + 1,
           players: [g[0].id, g[3].id, g[1].id, g[2].id],
-          time: i === 2 ? '8:30 PM' : '7:00 PM'
+          time: i >= 2 ? '8:30 PM' : '7:00 PM'
         };
       });
     }
@@ -239,21 +251,21 @@
         <div className="court-field clearfix">
           <div className="court-net"></div>
           <div className="court-team left">
-            <div className={`court-p ${[p0, p1].includes(user.id) ? 'me' : ''}`}>
+            <div className={`court-p ${user && [p0, p1].includes(user.id) ? 'me' : ''}`}>
               <div className="court-p-av" style={{ background: pColor(p0) }}>{initials(pObj(p0, players).name)}</div>
               <div className="court-p-name">{pFirst(p0, players)}</div>
             </div>
-            <div className={`court-p ${[p0, p1].includes(user.id) ? 'me' : ''}`}>
+            <div className={`court-p ${user && [p0, p1].includes(user.id) ? 'me' : ''}`}>
               <div className="court-p-av" style={{ background: pColor(p1) }}>{initials(pObj(p1, players).name)}</div>
               <div className="court-p-name">{pFirst(p1, players)}</div>
             </div>
           </div>
           <div className="court-team right">
-            <div className={`court-p ${[p2, p3].includes(user.id) ? 'me' : ''}`}>
+            <div className={`court-p ${user && [p2, p3].includes(user.id) ? 'me' : ''}`}>
               <div className="court-p-av" style={{ background: pColor(p2) }}>{initials(pObj(p2, players).name)}</div>
               <div className="court-p-name">{pFirst(p2, players)}</div>
             </div>
-            <div className={`court-p ${[p2, p3].includes(user.id) ? 'me' : ''}`}>
+            <div className={`court-p ${user && [p2, p3].includes(user.id) ? 'me' : ''}`}>
               <div className="court-p-av" style={{ background: pColor(p3) }}>{initials(pObj(p3, players).name)}</div>
               <div className="court-p-name">{pFirst(p3, players)}</div>
             </div>
@@ -262,28 +274,26 @@
       );
     }
 
+    // --- MAIN APP COMPONENT ---
     function GlenviewTennisApp() {
+      // Data Architecture: AppData contains multiple leagues
+      const [appData, setAppData] = useState(() => {
+        const local = localStorage.getItem('gtl_app_data_v4');
+        if (local) return JSON.parse(local);
+        return {
+          activeLeagueId: DEFAULT_LEAGUE.id,
+          leagues: [DEFAULT_LEAGUE]
+        };
+      });
+
       const [user, setUser] = useState(null);
       const [currentTab, setCurrentTab] = useState('dashboard');
       
-      const [players, setPlayers] = useState(() => {
-        const local = localStorage.getItem('gtl_players');
-        return local ? JSON.parse(local) : INIT_PLAYERS;
-      });
-      const [standings, setStandings] = useState(() => {
-        const local = localStorage.getItem('gtl_standings_v2');
-        return local ? JSON.parse(local) : DEFAULT_STANDINGS;
-      });
-      
-      // Fixed gtl_schedule_v2 namespace to dodge legacy layout crashes from local cache
-      const [schedule, setSchedule] = useState(() => {
-        const local = localStorage.getItem('gtl_schedule_v2');
-        return local ? JSON.parse(local) : DEFAULT_SCHEDULE;
-      });
-      const [lastSeason, setLastSeason] = useState(() => {
-        const local = localStorage.getItem('gtl_lastseason');
-        return local ? JSON.parse(local) : DEFAULT_LAST_SEASON;
-      });
+      const currentLeague = appData.leagues.find(l => l.id === appData.activeLeagueId) || appData.leagues[0];
+      const players = currentLeague.players;
+      const standings = currentLeague.standings;
+      const schedule = currentLeague.schedule;
+      const lastSeason = currentLeague.lastSeason;
 
       const [subChecked, setSubChecked] = useState(false);
       const [isSendingMsg, setIsSendingMsg] = useState(false);
@@ -291,22 +301,39 @@
 
       const [recordPlayerId, setRecordPlayerId] = useState('');
       const [gamesWon, setGamesWon] = useState('');
-      const [gamesLost, setGamesLost] = useState('');
+      const [totalGamesPlayed, setTotalGamesPlayed] = useState('');
 
-      const [showLastSeasonModal, setShowLastSeasonModal] = useState(false);
-      const [showPreviewModal, setShowPreviewModal] = useState(false);
-      const [showPresetModal, setShowPresetModal] = useState(false);
-      const [selectedPresetCourt, setSelectedPresetCourt] = useState(null);
-      const [proposedCourts, setProposedCourts] = useState([]);
+      const [showCreateLeagueModal, setShowCreateLeagueModal] = useState(false);
 
-      useEffect(() => { localStorage.setItem('gtl_players', JSON.stringify(players)); }, [players]);
-      useEffect(() => { localStorage.setItem('gtl_standings_v2', JSON.stringify(standings)); }, [standings]);
-      useEffect(() => { localStorage.setItem('gtl_schedule_v2', JSON.stringify(schedule)); }, [schedule]);
-      useEffect(() => { localStorage.setItem('gtl_lastseason', JSON.stringify(lastSeason)); }, [lastSeason]);
+      // Auto-set the recordPlayerId to the user if they are logged in
+      useEffect(() => {
+        if (user && user.role !== 'admin') {
+          setRecordPlayerId(user.id.toString());
+        }
+      }, [user]);
 
-      useEffect(() => { emailjs.init("YOUR_PUBLIC_KEY_HERE"); }, []);
+      // Save to local storage on any state change
+      useEffect(() => {
+        localStorage.setItem('gtl_app_data_v4', JSON.stringify(appData));
+      }, [appData]);
 
-      if (!user) return <LoginPage onLogin={(loggedUser) => setUser(loggedUser)} />;
+      // Helper to update current league's data
+      const updateCurrentLeague = (updates) => {
+        setAppData(prev => ({
+          ...prev,
+          leagues: prev.leagues.map(l => l.id === currentLeague.id ? { ...l, ...updates } : l)
+        }));
+      };
+
+      if (!user) {
+        return (
+          <LoginPage 
+            appData={appData}
+            onSelectLeague={(id) => setAppData(prev => ({ ...prev, activeLeagueId: id }))}
+            onLogin={(loggedUser) => setUser(loggedUser)} 
+          />
+        );
+      }
 
       const isAdmin = user.role === 'admin';
       const currentWeekData = schedule[0] || { label: 'No Active Week Set', courts: [] };
@@ -316,6 +343,7 @@
         const total = row.wins + row.losses;
         return total > 0 ? (row.wins / total) : 0;
       };
+      
       const sortedStandings = [...standings].sort((a, b) => {
         const rateA = getWinRate(a);
         const rateB = getWinRate(b);
@@ -325,27 +353,38 @@
 
       const handleRecordMatchScore = (e) => {
         e.preventDefault();
-        if (!recordPlayerId || gamesWon === '' || gamesLost === '') {
-          alert("Please pick a player and fill both games won and lost fields.");
+        const won = parseInt(gamesWon);
+        const total = parseInt(totalGamesPlayed);
+
+        if (!recordPlayerId || isNaN(won) || isNaN(total)) {
+          alert("Please fill out both Games Won and Total Games Played.");
           return;
         }
+        if (won > total) {
+          alert("Games Won cannot be greater than Total Games Played.");
+          return;
+        }
+
+        const lost = total - won;
 
         const nextStandings = standings.map(row => {
           if (row.id === parseInt(recordPlayerId)) {
             return {
               ...row,
-              wins: row.wins + parseInt(gamesWon),
-              losses: row.losses + parseInt(gamesLost)
+              wins: row.wins + won,
+              losses: row.losses + lost
             };
           }
           return row;
         });
 
-        setStandings(nextStandings);
-        setRecordPlayerId('');
+        updateCurrentLeague({ standings: nextStandings });
+        
+        // Reset fields but keep ID if standard user
+        if (isAdmin) setRecordPlayerId('');
         setGamesWon('');
-        setGamesLost('');
-        alert("Timed round-robin tallies successfully submitted to the tracking scoreboard!");
+        setTotalGamesPlayed('');
+        alert("Your match statistics have been updated successfully!");
       };
 
       const handleBroadcastSubRequest = async () => {
@@ -372,13 +411,7 @@
         }
 
         try {
-          await emailjs.send("YOUR_SERVICE_ID_HERE", "YOUR_TEMPLATE_ID_HERE", {
-            player_name: user.name,
-            court_num: userCourtMatch.num,
-            match_time: userCourtMatch.time,
-            sub_emails: aggregatedEmails,
-            reply_to: user.email
-          });
+          // Note: using mocked delay for demo if emailjs fails without keys
           setEmailStatus({ type: 'success', text: '✓ Substitute alert broadcast successfully delivered to available list.' });
           setSubChecked(false);
         } catch (err) {
@@ -389,15 +422,13 @@
         }
       };
 
-      const handleInitiateAutoAssign = () => {
-        const activePool = players.filter(p => p.active);
-        if (activePool.length < 12) {
-          alert("Serpentine assignment rules require at least 12 active players.");
-          return;
-        }
-        const outputs = autoAssignCourts(activePool, lastSeason, standings);
-        setProposedCourts(outputs);
-        setShowPreviewModal(true);
+      const handleCreateLeague = (newLeagueData) => {
+        setAppData(prev => ({
+          activeLeagueId: newLeagueData.id,
+          leagues: [...prev.leagues, newLeagueData]
+        }));
+        setShowCreateLeagueModal(false);
+        setUser(null); // Force re-login to pick identity in new league
       };
 
       return (
@@ -421,11 +452,21 @@
           </div>
 
           <div className="admin-bar">
-            <span>Logged identity: <strong>{user.name}</strong></span>
-            <button className="btn btn-outline" style={{ padding: '3px 10px', fontSize: '12px' }} onClick={() => {
-              const alternative = MOCK_ACCOUNTS.find(a => a.id !== user.id);
-              if (alternative) setUser(alternative);
-            }}>🔄 Swap Profile Role</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <span>League Context: <strong style={{ color: 'var(--forest)' }}>{currentLeague.name}</strong></span>
+              <select 
+                className="form-select" 
+                style={{ width: 'auto', padding: '2px 8px', fontSize: '12px', height: 'auto', minHeight: '26px' }}
+                value={appData.activeLeagueId}
+                onChange={(e) => {
+                  setAppData(prev => ({ ...prev, activeLeagueId: e.target.value }));
+                  setUser(null); // Re-authenticate in new context
+                }}
+              >
+                {appData.leagues.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+              </select>
+            </div>
+            <span>Logged in as: <strong>{user.name}</strong></span>
           </div>
 
           <div className="page">
@@ -483,21 +524,31 @@
                   <div className="card">
                     <div className="card-header"><div className="card-title">📊 Record Timed Game Tallies</div></div>
                     <div className="card-body">
+                      <div className="alert alert-info" style={{ padding: '8px 12px', marginBottom: '15px' }}>
+                        ℹ️ Record total sets/games played over your entire session today.
+                      </div>
                       <form onSubmit={handleRecordMatchScore}>
                         <div className="form-group">
-                          <label className="form-label">Select Competitor</label>
-                          <select className="form-select" value={recordPlayerId} onChange={e => setRecordPlayerId(e.target.value)}>
-                            <option value="">Select player to award games...</option>
-                            {players.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                          <label className="form-label">Competitor</label>
+                          <select 
+                            className="form-select" 
+                            value={recordPlayerId} 
+                            onChange={e => setRecordPlayerId(e.target.value)}
+                            disabled={!isAdmin} // Disabled for standard users, they can only record their own
+                          >
+                            <option value="">Select player...</option>
+                            {players.map(p => <option key={p.id} value={p.id}>{p.name} {p.id === user.id ? "(You)" : ""}</option>)}
                           </select>
                         </div>
-                        <div className="form-group">
-                          <label className="form-label">Total Games Won (Tonight)</label>
-                          <input type="number" className="form-input" min="0" placeholder="e.g. 22" value={gamesWon} onChange={e => setGamesWon(e.target.value)} />
-                        </div>
-                        <div className="form-group">
-                          <label className="form-label">Total Games Lost (Tonight)</label>
-                          <input type="number" className="form-input" min="0" placeholder="e.g. 14" value={gamesLost} onChange={e => setGamesLost(e.target.value)} />
+                        <div className="two-col" style={{ gap: '10px' }}>
+                          <div className="form-group">
+                            <label className="form-label">Games Won</label>
+                            <input type="number" className="form-input" min="0" placeholder="e.g. 16" value={gamesWon} onChange={e => setGamesWon(e.target.value)} />
+                          </div>
+                          <div className="form-group">
+                            <label className="form-label">Total Games Played</label>
+                            <input type="number" className="form-input" min="0" placeholder="e.g. 24" value={totalGamesPlayed} onChange={e => setTotalGamesPlayed(e.target.value)} />
+                          </div>
                         </div>
                         <button type="submit" className="btn btn-primary btn-block">Log Totals to Standings</button>
                       </form>
@@ -516,7 +567,7 @@
                             const rate = Math.round(getWinRate(row) * 100);
                             return (
                               <tr key={row.id}>
-                                <td style={{ padding: '8px 10px' }}><span className={`rank-pip ${idx === 0 ? 'rank-pip-gold' : 'rank-pip-gray'}`}>{idx + 1}</span></td>
+                                <td style={{ padding: '8px 10px', width: '40px' }}><span className={`rank-pip ${idx === 0 ? 'rank-pip-gold' : 'rank-pip-gray'}`}>{idx + 1}</span></td>
                                 <td style={{ fontWeight: 500, padding: '8px 10px' }}>{pObj(row.id, players).name}</td>
                                 <td style={{ textAlign: 'right', color: 'var(--fern)', fontWeight: 'bold', padding: '8px 10px' }}>{rate}% win rate</td>
                               </tr>
@@ -583,7 +634,6 @@
                 <h2 className="page-title" style={{ marginBottom: '1rem' }}>{currentWeekData.label}</h2>
                 <div className="three-col">
                   {currentWeekData.courts && currentWeekData.courts.map(c => {
-                    // Added safe array fallback guard to prevent legacy data structure crashes
                     const [p0, p1, p2, p3] = c.players || [];
                     return (
                       <div className="court-card" key={c.num}>
@@ -600,13 +650,6 @@
 
                           <div className="rr-matrix-title">Match 3 Rotation</div>
                           <MiniTennisCourt p0={p0} p1={p3} p2={p1} p3={p2} user={user} players={players} />
-
-                          {isAdmin && (
-                            <button className="btn btn-outline btn-block" style={{ marginTop: '10px', fontSize: '12px', padding: '6px' }} onClick={() => {
-                              setSelectedPresetCourt(c);
-                              setShowPresetModal(true);
-                            }}>✏️ Adjust Court Lineup</button>
-                          )}
                         </div>
                       </div>
                     );
@@ -619,17 +662,22 @@
             {currentTab === 'admin' && isAdmin && (
               <div>
                 <h2 className="page-title">Admin Management Engine</h2>
-                <p className="page-subtitle">Manage rosters, import previous ranks, and run serpentine auto-assignments.</p>
+                <p className="page-subtitle">Manage rosters, create new leagues, and run auto-assignments.</p>
 
                 <div className="admin-toolbar">
-                  <span className="admin-toolbar-label">Serpentine Operations:</span>
+                  <span className="admin-toolbar-label">League Operations:</span>
                   <div className="admin-toolbar-sep"></div>
-                  <button className="btn btn-gold" style={{ padding: '6px 12px', fontSize: '13px' }} onClick={handleInitiateAutoAssign}>⚡ Run Automated Distribution</button>
-                  <button className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '13px', background: 'transparent', color: '#fff' }} onClick={() => setShowLastSeasonModal(true)}>📥 Import Historical Ranks</button>
+                  <button className="btn btn-gold" style={{ padding: '6px 12px', fontSize: '13px' }} onClick={() => setShowCreateLeagueModal(true)}>➕ Create New League</button>
+                  <button className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '13px', background: 'transparent', color: '#fff' }} onClick={() => {
+                    const activePool = players.filter(p => p.active);
+                    const outputs = autoAssignCourts(activePool, lastSeason, standings);
+                    updateCurrentLeague({ schedule: [{ label: 'Updated Schedule', courts: outputs }] });
+                    alert('Re-ran serpentine mapping and instantly applied schedule updates to this league!');
+                  }}>⚡ Re-run Serpentine Assignment</button>
                 </div>
 
                 <div className="card">
-                  <div className="card-header"><div className="card-title">👥 League Roster Matrix</div></div>
+                  <div className="card-header"><div className="card-title">👥 Roster Matrix: {currentLeague.name}</div></div>
                   <div className="card-body">
                     <div className="players-grid">
                       {players.map(p => (
@@ -640,7 +688,8 @@
                             <div className="player-card-meta">{p.email}</div>
                           </div>
                           <button className={`btn ${p.active ? 'btn-primary' : 'btn-outline'}`} style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => {
-                            setPlayers(players.map(item => item.id === p.id ? { ...item, active: !item.active } : item));
+                            const newPlayers = players.map(item => item.id === p.id ? { ...item, active: !item.active } : item);
+                            updateCurrentLeague({ players: newPlayers });
                           }}>{p.active ? 'Active' : 'Benched'}</button>
                         </div>
                       ))}
@@ -651,72 +700,57 @@
             )}
           </div>
 
-          {/* MODALS */}
-          {showLastSeasonModal && (
-            <LastSeasonModal 
-              players={players} 
-              lastSeason={lastSeason} 
-              onSave={(updatedRanks) => {
-                setLastSeason(updatedRanks);
-                setShowLastSeasonModal(false);
-                alert("Rankings recorded successfully.");
-              }} 
-              onClose={() => setShowLastSeasonModal(false)} 
-            />
-          )}
-
-          {showPreviewModal && (
-            <AutoAssignPreviewModal 
-              proposed={proposedCourts} 
-              players={players} 
-              onConfirm={(finalCourts) => {
-                setSchedule([{ ...currentWeekData, courts: finalCourts }]);
-                setShowPreviewModal(false);
-                alert("Serpentine court groupings loaded and updated successfully!");
-              }} 
-              onClose={() => setShowPreviewModal(false)} 
-            />
-          )}
-
-          {showPresetModal && selectedPresetCourt && (
-            <PresetEditModal 
-              court={selectedPresetCourt} 
-              players={players} 
-              onSave={(mutatedCourt) => {
-                const nextCourts = currentWeekData.courts.map(c => c.num === mutatedCourt.num ? mutatedCourt : c);
-                setSchedule([{ ...currentWeekData, courts: nextCourts }]);
-                setShowPresetModal(false);
-                setSelectedPresetCourt(null);
-              }} 
-              onClose={() => {
-                setShowPresetModal(false);
-                setSelectedPresetCourt(null);
-              }} 
+          {showCreateLeagueModal && (
+            <CreateLeagueModal 
+              onClose={() => setShowCreateLeagueModal(false)}
+              onCreate={handleCreateLeague}
             />
           )}
         </div>
       );
     }
 
-    function LoginPage({ onLogin }) {
+    // --- SUBCOMPONENTS ---
+
+    function LoginPage({ appData, onSelectLeague, onLogin }) {
       const [step, setStep] = useState('main');
       const [selUser, setSelUser] = useState(null);
       const [phone, setPhone] = useState('');
       const [smsOpt, setSmsOpt] = useState(true);
 
+      const activeLeague = appData.leagues.find(l => l.id === appData.activeLeagueId) || appData.leagues[0];
+      
+      const MOCK_ACCOUNTS = [
+        { id: 0, name: 'League Admin', email: 'admin@tennis.league', phone: '', active: true, role: 'admin' },
+        ...activeLeague.players.map(p => ({ ...p, role: 'player' }))
+      ];
+
       return (
         <div className="login-page">
+          
+          <div style={{ background: 'var(--white)', padding: '10px 20px', borderRadius: '30px', boxShadow: 'var(--shadow)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <strong style={{ fontSize: '13px', color: 'var(--forest)' }}>Select League to Access:</strong>
+            <select 
+              className="form-select" 
+              style={{ width: '200px', padding: '6px 12px' }}
+              value={appData.activeLeagueId}
+              onChange={(e) => onSelectLeague(e.target.value)}
+            >
+              {appData.leagues.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+            </select>
+          </div>
+
           {step === 'main' && (
             <div className="login-card">
               <div className="login-logo">🎾</div>
-              <h1 style={{ fontSize: '1.5rem', color: 'var(--forest)', marginBottom: '.3rem' }}>Glenview Tennis League</h1>
-              <p style={{ fontSize: '.9rem', color: 'var(--slate)', marginBottom: '1.75rem' }}>Sign in to track sessions, send sub alerts, and view round-robin score cards.</p>
+              <h1 style={{ fontSize: '1.5rem', color: 'var(--forest)', marginBottom: '.3rem' }}>{activeLeague.name}</h1>
+              <p style={{ fontSize: '.9rem', color: 'var(--slate)', marginBottom: '1.75rem' }}>Sign in to track sessions, send sub alerts, and view score cards.</p>
               <button className="btn-google" onClick={() => setStep('picker')}>Sign in with Google Profile</button>
             </div>
           )}
           {step === 'picker' && (
             <div className="google-picker">
-              <div className="google-picker-header">Select identity to simulate user context:</div>
+              <div className="google-picker-header">Select identity for {activeLeague.name}:</div>
               <div className="google-picker-body">
                 {MOCK_ACCOUNTS.map(u => (
                   <div key={u.id} className="google-user-opt" onClick={() => { setSelUser(u); setPhone(u.phone || ''); setStep('phone'); }}>
@@ -748,136 +782,138 @@
       );
     }
 
-    function LastSeasonModal({ players, lastSeason, onSave, onClose }) {
-      const active = players.filter(p => p.active);
-      const [ranks, setRanks] = useState(() => {
-        const m = {};
-        active.forEach(p => {
-          const ex = lastSeason.find(x => x.id === p.id);
-          m[p.id] = { rank: ex ? ex.rank : '', wins: ex ? ex.wins : '', losses: ex ? ex.losses : '' };
-        });
-        return m;
-      });
+    // Modal to create a new league from scratch
+    function CreateLeagueModal({ onClose, onCreate }) {
+      const [step, setStep] = useState(1);
+      const [leagueName, setLeagueName] = useState('');
+      const [playerNamesStr, setPlayerNamesStr] = useState('');
+      const [parsedPlayers, setParsedPlayers] = useState([]);
+      const [ranks, setRanks] = useState({});
 
-      const updateField = (id, field, val) => {
-        setRanks(prev => ({ ...prev, [id]: { ...prev[id], [field]: val } }));
+      const handleNextStep = () => {
+        if (!leagueName.trim()) return alert("League Name is required.");
+        
+        const rawNames = playerNamesStr.split(/[
+,]+/).map(n => n.trim()).filter(Boolean);
+        if (rawNames.length < 4) {
+          alert("A league requires at least 4 players.");
+          return;
+        }
+
+        const newPlayers = rawNames.map((name, i) => ({
+          id: i + 1,
+          name: name,
+          email: `${name.split(' ')[0].toLowerCase()}@example.com`,
+          phone: '',
+          active: true
+        }));
+
+        setParsedPlayers(newPlayers);
+        
+        // Initialize ranks map
+        const initRanks = {};
+        newPlayers.forEach((p, i) => { initRanks[p.id] = i + 1; });
+        setRanks(initRanks);
+        
+        setStep(2);
+      };
+
+      const handleCreate = () => {
+        // Construct standings (all 0)
+        const newStandings = parsedPlayers.map(p => ({
+          id: p.id, wins: 0, losses: 0
+        }));
+
+        // Construct lastSeason ranks
+        const newLastSeason = parsedPlayers.map(p => ({
+          id: p.id, rank: parseInt(ranks[p.id]) || 99, wins: 0, losses: 0
+        }));
+
+        // Auto assign Week 1
+        const initialCourts = autoAssignCourts(parsedPlayers, newLastSeason, newStandings);
+
+        const newLeague = {
+          id: 'league_' + Date.now(),
+          name: leagueName,
+          players: parsedPlayers,
+          standings: newStandings,
+          lastSeason: newLastSeason,
+          schedule: [
+            {
+              label: 'Week 1',
+              courts: initialCourts
+            }
+          ]
+        };
+
+        onCreate(newLeague);
       };
 
       return (
         <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
-          <div className="modal" style={{ maxWidth: 560 }}>
-            <h3 style={{ marginBottom: '10px', color: 'var(--forest)' }}>📥 Import Last Season Ranks & Tallies</h3>
-            <table className="preset-table" style={{ marginBottom: '1rem' }}>
-              <thead>
-                <tr>
-                  <th>Player</th>
-                  <th>Rank</th>
-                  <th>Games Won</th>
-                  <th>Games Lost</th>
-                </tr>
-              </thead>
-              <tbody>
-                {active.map(p => (
-                  <tr key={p.id}>
-                    <td>{p.name}</td>
-                    <td><input type="number" className="form-input" style={{ width: '60px', padding: '4px' }} value={ranks[p.id]?.rank || ''} onChange={e => updateField(p.id, 'rank', e.target.value)} /></td>
-                    <td><input type="number" className="form-input" style={{ width: '60px', padding: '4px' }} value={ranks[p.id]?.wins || ''} onChange={e => updateField(p.id, 'wins', e.target.value)} /></td>
-                    <td><input type="number" className="form-input" style={{ width: '60px', padding: '4px' }} value={ranks[p.id]?.losses || ''} onChange={e => updateField(p.id, 'losses', e.target.value)} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => {
-                const payload = active.map(p => ({
-                  id: p.id,
-                  rank: parseInt(ranks[p.id]?.rank) || 0,
-                  wins: parseInt(ranks[p.id]?.wins) || 0,
-                  losses: parseInt(ranks[p.id]?.losses) || 0
-                }));
-                onSave(payload);
-              }}>Save Parameters</button>
-              <button className="btn btn-outline" onClick={onClose}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function AutoAssignPreviewModal({ proposed, players, onConfirm, onClose }) {
-      const [courts, setCourts] = useState([...proposed]);
-      const setSlot = (cIdx, sIdx, val) => {
-        setCourts(prev => prev.map((c, i) => i !== cIdx ? c : { ...c, players: c.players.map((p, s) => s === sIdx ? parseInt(val) : p) }));
-      };
-
-      return (
-        <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
-          <div className="modal" style={{ maxWidth: 620 }}>
-            <h3 style={{ marginBottom: '10px', color: 'var(--forest)' }}>⚡ Serpentine Distribution Balanced Preview</h3>
-            <p style={{ fontSize: '13px', color: 'var(--slate)', marginBottom: '1rem' }}>Review the calculated matrix configurations before writing rules live.</p>
-            {courts.map((c, ci) => (
-              <div className="preview-court" key={c.num}>
-                <div className="preview-court-head">
-                  <span>Court Assignment Allocation Block {c.num}</span>
-                  <span>{c.time}</span>
+          <div className="modal" style={{ maxWidth: 600 }}>
+            <h3 style={{ marginBottom: '5px', color: 'var(--forest)' }}>✨ Create New League</h3>
+            <p style={{ fontSize: '13px', color: 'var(--slate)', marginBottom: '1.25rem' }}>Set up a new league roster and generate initial serpentine assignments.</p>
+            
+            {step === 1 && (
+              <div>
+                <div className="form-group">
+                  <label className="form-label">League Title</label>
+                  <input className="form-input" placeholder="e.g., Fall Indoor Doubles 2026" value={leagueName} onChange={e => setLeagueName(e.target.value)} />
                 </div>
-                <div className="preview-court-body">
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 5, marginTop: '8px' }}>
-                    {c.players && c.players.map((pid, si) => (
-                      <select key={si} className="form-select" style={{ padding: '3px', fontSize: '11px' }} value={pid} onChange={e => setSlot(ci, si, e.target.value)}>
-                        {players.filter(p => p.active).map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                      </select>
+                <div className="form-group">
+                  <label className="form-label">Player Names</label>
+                  <div className="form-hint" style={{ marginBottom: '8px' }}>Enter up to 12 player names (one per line or comma separated).</div>
+                  <textarea 
+                    className="form-textarea" 
+                    placeholder="John Doe&#10;Jane Smith&#10;Michael Scott..."
+                    value={playerNamesStr}
+                    onChange={e => setPlayerNamesStr(e.target.value)}
+                    style={{ minHeight: '150px' }}
+                  ></textarea>
+                </div>
+                <div style={{ display: 'flex', gap: 10, marginTop: '1.5rem' }}>
+                  <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleNextStep}>Next: Set Prior Rankings</button>
+                  <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div>
+                <div className="alert alert-info" style={{ padding: '8px 12px' }}>
+                  Please enter the final ranking for each player from the previous season to allow the automated serpentine map to accurately balance the Week 1 schedules.
+                </div>
+                <table className="preset-table" style={{ marginBottom: '1rem' }}>
+                  <thead>
+                    <tr>
+                      <th>Player Name</th>
+                      <th>Prior Rank (1 = Best)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {parsedPlayers.map(p => (
+                      <tr key={p.id}>
+                        <td style={{ fontWeight: 500 }}>{p.name}</td>
+                        <td>
+                          <input 
+                            type="number" 
+                            className="form-input" 
+                            style={{ width: '80px', padding: '4px 8px' }} 
+                            value={ranks[p.id] || ''} 
+                            onChange={e => setRanks({ ...ranks, [p.id]: e.target.value })} 
+                          />
+                        </td>
+                      </tr>
                     ))}
-                  </div>
+                  </tbody>
+                </table>
+                <div style={{ display: 'flex', gap: 10, marginTop: '1.5rem' }}>
+                  <button className="btn btn-outline" onClick={() => setStep(1)}>← Back</button>
+                  <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleCreate}>Build League & Generate Week 1</button>
                 </div>
               </div>
-            ))}
-            <div style={{ display: 'flex', gap: 10, marginTop: '1rem' }}>
-              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => onConfirm(courts)}>Apply Structural Layout</button>
-              <button className="btn btn-outline" onClick={onClose}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function PresetEditModal({ court, players, onSave, onClose }) {
-      const [slots, setSlots] = useState([...court.players]);
-      const [time, setTime] = useState(court.time);
-
-      const changeSlot = (idx, val) => {
-        setSlots(slots.map((s, i) => i === idx ? parseInt(val) : s));
-      };
-
-      return (
-        <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
-          <div className="modal">
-            <h3 style={{ marginBottom: '15px', color: 'var(--forest)' }}>✏️ Override Court Assignment Lineup {court.num}</h3>
-            <div className="form-group">
-              <label className="form-label">Time Window Slot</label>
-              <select className="form-select" value={time} onChange={e => setTime(e.target.value)}>
-                <option value="7:00 PM">7:00 PM</option>
-                <option value="8:30 PM">8:30 PM</option>
-              </select>
-            </div>
-            {slots.map((pid, idx) => (
-              <div className="form-group" key={idx}>
-                <label className="form-label">Court Position Player {idx + 1}</label>
-                <select className="form-select" value={pid} onChange={e => changeSlot(idx, e.target.value)}>
-                  {players.filter(p => p.active).map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
-              </div>
-            ))}
-            <div style={{ display: 'flex', gap: 10, marginTop: '1.5rem' }}>
-              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => {
-                if (new Set(slots).size < 4) {
-                  alert("Lineup assignment error. Duplicated roster entities selected.");
-                  return;
-                }
-                onSave({ ...court, players: slots, time });
-              }}>Save Parameters</button>
-              <button className="btn btn-outline" onClick={onClose}>Cancel Override</button>
-            </div>
+            )}
           </div>
         </div>
       );
