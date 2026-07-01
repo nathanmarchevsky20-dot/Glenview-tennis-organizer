@@ -1,923 +1,822 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glenview Tennis League</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-  
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glenview Tennis League</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+/* ── RESET & BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Court green palette */
+  --c0:#071a0f; --c1:#0d2b1c; --c2:#1b4332; --c3:#2d6a4f; --c4:#52b788; --c5:#b7e4c7; --c6:#d8f3dc;
+  /* Surface */
+  --ivory:#f7f5ef; --cream:#ede9e0; --white:#ffffff;
+  /* Ink */
+  --ink:#111614; --slate:#3d4f45; --mist:#7a8f82; --fog:#dce6de;
+  /* Accent gold */
+  --g0:#7a5b10; --g1:#b8892a; --g2:#d4a843; --g3:#f5e6c0; --g4:#fdf8ed;
+  /* Status */
+  --red:#bf3228; --red-l:#fce8e8; --blue:#1a56a0; --blue-l:#dbeafe; --amber:#c07a1a; --amber-l:#fef3cd;
+  /* Radii & shadow */
+  --r:10px; --r-sm:6px; --r-lg:16px; --r-xl:22px;
+  --sd:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+  --sd-sm:0 1px 3px rgba(0,0,0,.07);
+  --sd-lg:0 8px 32px rgba(0,0,0,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--ivory);color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'DM Serif Display',serif;line-height:1.2}
+button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;outline:none;line-height:1}
+input,select,textarea{font-family:'DM Sans',sans-serif;outline:none}
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --forest: #0d2b1c; --pine: #1b4332; --fern: #2d6a4f; --sage: #52b788;
-      --mint: #b7e4c7; --dew: #d8f3dc; --ivory: #faf8f3; --cream: #f0ece4;
-      --gold: #b8892a; --gold-m: #d4a843; --gold-l: #f5e6c0; --gold-xl: #fdf8ed;
-      --white: #ffffff; --ink: #1a1a1a; --slate: #4a5568; --mist: #9ca3af; --fog: #e5e7eb;
-      --red: #c0392b; --red-l: #fde8e8; --blue: #1a56a0; --blue-l: #dbeafe;
-      --r: 12px; --r-sm: 8px; --r-lg: 16px;
-      --shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
-      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
-    }
-    body { font-family: 'Outfit', sans-serif; background: var(--ivory); color: var(--ink); min-height: 100vh; font-size: 15px; line-height: 1.6; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; }
-    button { font-family: 'Outfit', sans-serif; cursor: pointer; border: none; outline: none; }
-    input, select, textarea { font-family: 'Outfit', sans-serif; outline: none; }
-    
-    .nav { background: var(--forest); height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.25); }
-    .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .nav-logo-icon { width: 36px; height: 36px; background: var(--gold-m); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .nav-logo-text { color: #fff; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; }
-    .nav-links { display: flex; align-items: center; gap: 4px; }
-    .nav-link { color: rgba(255,255,255,.65); padding: 7px 13px; border-radius: var(--r-sm); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .18s; background: none; border: none; }
-    .nav-link:hover { color: #fff; background: rgba(255,255,255,.1); }
-    .nav-link.active { color: #fff; background: rgba(255,255,255,.15); }
-    
-    .admin-chip { background: var(--gold-m); color: var(--forest); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: .04em; }
-    .admin-bar { background: var(--gold-xl); border-bottom: 2px solid var(--gold-l); padding: 8px 1.5rem; font-size: 13px; font-weight: 500; color: #7a5b10; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-    
-    .page { max-width: 1120px; margin: 0 auto; padding: 2.5rem 1.5rem; }
-    .page-title { font-size: 1.8rem; font-weight: 700; color: var(--forest); }
-    .page-subtitle { color: var(--slate); font-size: .93rem; margin-top: .3rem; margin-bottom: 1.5rem; }
-    
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-    @media(max-width: 860px) { .two-col, .three-col { grid-template-columns: 1fr; } }
-    
-    .card { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow); border: 1px solid var(--fog); overflow: hidden; margin-bottom: 1.5rem; }
-    .card-header { padding: .85rem 1.2rem; border-bottom: 1px solid var(--fog); display: flex; align-items: center; justify-content: space-between; background: var(--cream); }
-    .card-title { font-size: .95rem; font-weight: 600; color: var(--forest); }
-    .card-body { padding: 1.2rem; }
-    
-    .your-court-hero { background: linear-gradient(135deg, var(--forest), var(--pine) 60%, var(--fern)); border-radius: var(--r-lg); padding: 1.5rem; margin-bottom: 2rem; color: #fff; position: relative; overflow: hidden; box-shadow: var(--shadow); }
-    .your-court-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; opacity: .7; margin-bottom: .4rem; }
-    .your-court-title { font-size: 1.4rem; font-weight: 700; font-family: 'Playfair Display', serif; margin-bottom: .3rem; }
-    .your-court-time { font-size: .88rem; opacity: .75; margin-bottom: 1rem; }
-    
-    .court-card { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow); border: 1px solid var(--fog); overflow: hidden; margin-bottom: 1.5rem; }
-    .court-header { background: var(--forest); color: #fff; padding: .7rem 1.1rem; display: flex; align-items: center; justify-content: space-between; }
-    .court-name { font-weight: 600; font-size: .9rem; }
-    .court-time { font-size: 12px; opacity: .7; }
-    
-    .rr-matrix-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--slate); margin: 8px 0 4px; }
-    .court-field { background: linear-gradient(160deg, #1a5c34, #1e6b3c); border-radius: var(--r-sm); padding: .6rem; position: relative; min-height: 80px; margin-bottom: 8px; }
-    .court-net { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.3); transform: translateX(-50%); }
-    .court-team { width: calc(50% - 10px); display: flex; flex-direction: column; gap: 4px; }
-    .court-team.left { float: left; }
-    .court-team.right { float: right; }
-    .court-p { background: rgba(255,255,255,.15); border-radius: 4px; padding: 3px 6px; display: flex; align-items: center; gap: 5px; }
-    .court-p.me { background: rgba(212,168,67,.4); border: 1px solid rgba(212,168,67,.6); }
-    .court-p-av { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
-    .court-p-name { font-size: 11px; color: #fff; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .clearfix::after { content: ''; display: block; clear: both; }
-    
-    .avatar { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; flex-shrink: 0; }
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: var(--r-sm); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .18s; border: none; white-space: nowrap; }
-    .btn-primary { background: var(--forest); color: #fff; } .btn-primary:hover { background: var(--pine); }
-    .btn-outline { background: var(--white); color: var(--ink); border: 1px solid var(--fog); } .btn-outline:hover { background: var(--cream); }
-    .btn-gold { background: var(--gold-m); color: #fff; } .btn-gold:hover { background: var(--gold); }
-    .btn-block { width: 100%; justify-content: center; }
-    .btn-google { background: #fff; color: #3c4043; border: 1px solid #ddd; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; padding: 12px 20px; font-size: 15px; font-weight: 500; border-radius: var(--r-sm); box-shadow: var(--shadow-sm); transition: all .18s; }
-    
-    .form-group { margin-bottom: 1rem; }
-    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--slate); margin-bottom: 5px; }
-    .form-input, .form-select, .form-textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--fog); border-radius: var(--r-sm); font-size: 14px; background: var(--white); color: var(--ink); }
-    .form-textarea { resize: vertical; min-height: 80px; }
-    
-    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .modal { background: var(--white); border-radius: var(--r-lg); padding: 1.75rem; width: 100%; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,.2); max-height: 90vh; overflow-y: auto; }
-    
-    .win-bar-wrap { width: 70px; height: 5px; background: var(--fog); border-radius: 3px; overflow: hidden; }
-    .win-bar { height: 100%; border-radius: 3px; background: var(--fern); }
-    .alert { padding: 11px 15px; border-radius: var(--r-sm); font-size: 14px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; }
-    .alert-gold { background: var(--gold-xl); color: #7a5b10; border: 1px solid var(--gold-l); }
-    .alert-info { background: var(--blue-l); color: var(--blue); border: 1px solid #bfdbfe; }
-    
-    .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
-    .player-card { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow-sm); border: 1px solid var(--fog); padding: 1rem; display: flex; align-items: center; gap: 12px; }
-    .player-card-info { flex: 1; min-width: 0; }
-    .player-card-name { font-weight: 600; font-size: .88rem; }
-    .player-card-meta { font-size: 12px; color: var(--mist); margin-top: 1px; }
-    
-    .admin-toolbar { background: var(--forest); border-radius: var(--r); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .admin-toolbar-label { color: rgba(255,255,255,.7); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
-    .admin-toolbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,.2); }
-    
-    .rank-pip { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
-    .rank-pip-gold { background: var(--gold-l); color: var(--gold); }
-    .rank-pip-gray { background: var(--fog); color: var(--slate); }
-    
-    .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--forest), #1a5c34 60%, var(--fern)); padding: 1rem; flex-direction: column; gap: 1rem; }
-    .login-card { background: var(--white); border-radius: var(--r-lg); padding: 2.5rem; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
-    .login-logo { width: 60px; height: 60px; background: var(--forest); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 1rem; }
-    .google-picker { background: var(--white); border-radius: var(--r-lg); width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
-    .google-picker-header { background: var(--blue); color: #fff; padding: 1rem 1.25rem; border-radius: var(--r-lg) var(--r-lg) 0 0; font-size: .9rem; font-weight: 500; }
-    .google-picker-body { padding: .5rem; max-height: 400px; overflow-y: auto; }
-    .google-user-opt { display: flex; align-items: center; gap: 12px; padding: .75rem 1rem; border-radius: var(--r-sm); cursor: pointer; }
-    .google-user-opt:hover { background: var(--cream); }
-    
-    .preset-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .preset-table th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 7px 10px; background: var(--cream); border-bottom: 1px solid var(--fog); }
-    .preset-table td { padding: 7px 10px; border-bottom: 1px solid var(--fog); }
-    
-    table.standings-table { width: 100%; border-collapse: collapse; text-align: left; }
-    table.standings-table th { border-bottom: 2px solid var(--fog); color: var(--slate); font-size: 0.85rem; text-transform: uppercase; padding: 10px; }
-    table.standings-table td { border-bottom: 1px solid var(--fog); padding: 12px 10px; font-size: 0.95rem; }
-    
-    .sub-section-box { margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.12); border-radius: var(--r-sm); border: 1px dashed rgba(255,255,255,0.3); }
-    .sub-checkbox-lbl { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; cursor: pointer; color: #fff; }
-    .toast-msg { padding: 10px; border-radius: var(--r-sm); font-size: 0.88rem; font-weight: 600; margin-bottom: 12px; }
-    .toast-success { background: var(--dew); color: var(--forest); border: 1px solid var(--mint); }
-    .toast-error { background: var(--red-l); color: var(--red); border: 1px solid #fca5a5; }
-    
-    .preview-court { margin-bottom: 12px; border: 1px solid var(--fog); border-radius: var(--r-sm); overflow: hidden; }
-    .preview-court-head { background: var(--cream); padding: 6px 10px; font-size: 12px; font-weight: 600; display: flex; justify-content: space-between; }
-    .preview-court-body { padding: 8px; background: var(--ivory); }
-  </style>
+/* ── NAV ── */
+.nav{background:var(--c0);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 1.75rem;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-logo{display:flex;align-items:center;gap:11px;cursor:pointer;text-decoration:none}
+.nav-ball{width:34px;height:34px;background:var(--g2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.nav-name{color:#fff;font-family:'DM Serif Display',serif;font-size:1.05rem;letter-spacing:.01em}
+.nav-league{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;margin-top:-2px}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-btn{color:rgba(255,255,255,.55);padding:7px 13px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;background:none;border:none;letter-spacing:.01em}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,.09)}
+.nav-btn.on{color:#fff;background:rgba(255,255,255,.13)}
+.nav-badge{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:10px;margin-left:4px;vertical-align:middle}
+.nav-right{display:flex;align-items:center;gap:10px}
+.chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
+.chip-gold{background:var(--g2);color:var(--c0)}
+.chip-green{background:var(--c6);color:var(--c2)}
+.chip-red{background:var(--red-l);color:var(--red)}
+.chip-blue{background:var(--blue-l);color:var(--blue)}
+.chip-gray{background:var(--fog);color:var(--slate)}
+.chip-amber{background:var(--amber-l);color:var(--amber)}
+
+/* ── ADMIN BAR ── */
+.admin-bar{background:var(--g4);border-bottom:2px solid var(--g3);padding:7px 1.75rem;font-size:12.5px;color:var(--g0);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* ── PAGE SHELL ── */
+.page{max-width:1140px;margin:0 auto;padding:2.5rem 1.75rem}
+.page-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--g2);margin-bottom:.4rem}
+.page-title{font-size:1.9rem;color:var(--c1);margin-bottom:.3rem}
+.page-sub{font-size:.9rem;color:var(--mist);margin-bottom:1.75rem}
+.section-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--mist);margin-bottom:.65rem}
+
+/* ── GRID HELPERS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:920px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* ── CARDS ── */
+.card{background:var(--white);border-radius:var(--r);box-shadow:var(--sd);border:1px solid var(--fog);overflow:hidden}
+.card+.card{margin-top:1.25rem}
+.card-hd{padding:.85rem 1.25rem;border-bottom:1px solid var(--fog);display:flex;align-items:center;justify-content:space-between;background:var(--cream)}
+.card-ht{font-size:.88rem;font-weight:600;color:var(--ink);letter-spacing:.01em}
+.card-bd{padding:1.25rem}
+
+/* ── HERO COURT ── */
+.hero{background:linear-gradient(140deg,var(--c0) 0%,var(--c2) 55%,var(--c3) 100%);border-radius:var(--r-lg);padding:1.75rem;margin-bottom:2rem;color:#fff;position:relative;overflow:hidden;box-shadow:var(--sd-lg)}
+.hero::after{content:'🎾';position:absolute;right:1.25rem;bottom:1rem;font-size:5rem;opacity:.08;pointer-events:none}
+.hero-eye{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;opacity:.55;margin-bottom:.35rem}
+.hero-title{font-family:'DM Serif Display',serif;font-size:1.5rem;margin-bottom:.25rem}
+.hero-time{font-size:.85rem;opacity:.65;margin-bottom:1.1rem}
+.hero-players{display:flex;flex-wrap:wrap;gap:7px}
+.hero-player{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);padding:5px 11px;border-radius:20px;font-size:13px;backdrop-filter:blur(4px)}
+.hero-player.you{background:var(--g2);color:var(--c0);font-weight:600}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:2rem}
+.stat{background:var(--white);border-radius:var(--r);padding:1.1rem 1.2rem;box-shadow:var(--sd-sm);border:1px solid var(--fog)}
+.stat-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mist)}
+.stat-val{font-size:2.1rem;font-weight:600;color:var(--c1);line-height:1.05;margin-top:4px}
+.stat-sub{font-size:12px;color:var(--mist);margin-top:3px}
+
+/* ── COURT CARD ── */
+.court-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sd);border:1px solid var(--fog);overflow:hidden}
+.court-card.mine{border:2px solid var(--g2)}
+.c-hd{background:var(--c1);color:#fff;padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between}
+.c-num{font-weight:600;font-size:.88rem;letter-spacing:.02em}
+.c-time{font-size:11.5px;opacity:.65}
+.c-bd{padding:.9rem}
+.grass{background:linear-gradient(155deg,#1a5c34,#1e6b3c);border-radius:var(--r-sm);padding:.7rem;position:relative;min-height:100px;margin-bottom:9px}
+.net{position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,.3);transform:translateX(-50%)}
+.net::after{content:'NET';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.88);color:var(--c2);font-size:8.5px;font-weight:700;letter-spacing:.09em;padding:2px 5px;border-radius:3px;white-space:nowrap}
+.team{width:calc(50% - 10px);display:flex;flex-direction:column;gap:4px}
+.team.l{float:left}.team.r{float:right}
+.cp{background:rgba(255,255,255,.14);border-radius:5px;padding:3px 6px;display:flex;align-items:center;gap:5px}
+.cp.me{background:rgba(212,168,67,.45);border:1px solid rgba(212,168,67,.6)}
+.cp-av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;color:#fff;flex-shrink:0}
+.cp-name{font-size:11px;color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cf::after{content:'';display:block;clear:both}
+
+/* ── ROUND ROBIN MATCHES ── */
+.rr-list{margin-top:9px}
+.rr-match{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--fog);font-size:12px}
+.rr-match:last-child{border-bottom:none}
+.rr-n{font-size:10px;font-weight:700;color:var(--mist);width:22px;flex-shrink:0}
+.rr-t1{font-weight:600;color:var(--ink)}
+.rr-vs{color:var(--mist);font-size:10.5px}
+.rr-t2{color:var(--slate)}
+
+/* ── AVATARS ── */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-family:'DM Mono',monospace}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:var(--r-sm);font-size:13.5px;font-weight:500;cursor:pointer;transition:all .16s;border:none;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.btn-p{background:var(--c1);color:#fff}.btn-p:hover{background:var(--c2)}
+.btn-o{background:var(--white);color:var(--ink);border:1px solid var(--fog)}.btn-o:hover{background:var(--cream)}
+.btn-g{background:var(--g2);color:var(--c0)}.btn-g:hover{background:var(--g1);color:#fff}
+.btn-r{background:var(--red);color:#fff}.btn-r:hover{opacity:.9}
+.btn-sm{padding:5px 11px;font-size:12.5px}
+.btn-xs{padding:3px 9px;font-size:11.5px;border-radius:5px}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── FORMS ── */
+.fg{margin-bottom:.95rem}
+.fl{display:block;font-size:12.5px;font-weight:600;color:var(--slate);margin-bottom:5px;letter-spacing:.01em}
+.fi,.fs,.fta{width:100%;padding:9px 12px;border:1px solid var(--fog);border-radius:var(--r-sm);font-size:13.5px;background:var(--white);color:var(--ink);transition:border .14s,box-shadow .14s}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--c4);box-shadow:0 0 0 3px rgba(82,183,136,.12)}
+.fta{resize:vertical;min-height:90px}
+.fh{font-size:11.5px;color:var(--mist);margin-top:4px}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mist);padding:10px 14px;background:var(--cream);border-bottom:1px solid var(--fog)}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--fog);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--ivory)}
+.tbl tr.me td{background:var(--g4)}
+
+/* ── RANK BADGE ── */
+.rb{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.rb-1{background:var(--g3);color:var(--g1)}
+.rb-2{background:#efefef;color:#555}
+.rb-3{background:#fce8d5;color:#b05a1e}
+.rb-n{background:var(--fog);color:var(--mist)}
+
+/* ── WIN BAR ── */
+.wb-w{width:64px;height:5px;background:var(--fog);border-radius:3px;overflow:hidden}
+.wb-b{height:100%;border-radius:3px;background:var(--c4);transition:width .4s}
+
+/* ── MODAL ── */
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem}
+.md{background:var(--white);border-radius:var(--r-lg);padding:1.85rem;width:100%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,.22);max-height:90vh;overflow-y:auto}
+.md-t{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--c1);margin-bottom:1.25rem}
+
+/* ── ALERTS ── */
+.al{padding:11px 14px;border-radius:var(--r-sm);font-size:13px;display:flex;align-items:flex-start;gap:9px;margin-bottom:1rem}
+.al-gold{background:var(--g4);color:var(--g0);border:1px solid var(--g3)}
+.al-info{background:var(--blue-l);color:var(--blue);border:1px solid #bfdbfe}
+.al-red{background:var(--red-l);color:var(--red);border:1px solid #fca5a5}
+.al-green{background:var(--c6);color:var(--c2);border:1px solid var(--c5)}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:2px;background:var(--cream);padding:3px;border-radius:var(--r-sm);width:fit-content;margin-bottom:1.5rem}
+.tab{padding:7px 16px;border-radius:5px;font-size:13px;font-weight:500;cursor:pointer;color:var(--mist);background:none;border:none;transition:all .14s;font-family:'DM Sans',sans-serif;letter-spacing:.01em}
+.tab.on{background:var(--white);color:var(--ink);box-shadow:var(--sd-sm)}
+
+/* ── PLAYERS GRID ── */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:11px}
+.pc{background:var(--white);border-radius:var(--r);box-shadow:var(--sd-sm);border:1px solid var(--fog);padding:.95rem;display:flex;align-items:center;gap:11px}
+.pc.you{border:2px solid var(--g2)}
+.pc-info{flex:1;min-width:0}
+.pc-name{font-weight:600;font-size:.88rem}
+.pc-meta{font-size:11.5px;color:var(--mist);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── ADMIN TOOLBAR ── */
+.at{background:var(--c1);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.at-lbl{color:rgba(255,255,255,.55);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;flex-shrink:0}
+.at-sep{width:1px;height:18px;background:rgba(255,255,255,.18);flex-shrink:0}
+
+/* ── DIVIDER ── */
+.dv{height:1px;background:var(--fog);margin:1rem 0}
+
+/* ── SCORE ENTRY ── */
+.sc-box{width:52px;padding:7px;border:1.5px solid var(--fog);border-radius:var(--r-sm);text-align:center;font-size:16px;font-weight:700;background:var(--white);font-family:'DM Mono',monospace;transition:border .14s}
+.sc-box:focus{border-color:var(--c4);box-shadow:0 0 0 3px rgba(82,183,136,.12)}
+.sc-box:disabled{background:var(--cream);color:var(--mist)}
+
+/* ── PRESET TABLE ── */
+.pt{width:100%;border-collapse:collapse;font-size:13px}
+.pt th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mist);padding:7px 10px;background:var(--cream);border-bottom:1px solid var(--fog);text-align:left}
+.pt td{padding:7px 10px;border-bottom:1px solid var(--fog);vertical-align:middle}
+
+/* ── LOGIN PAGE ── */
+.login-bg{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,var(--c0) 0%,var(--c2) 55%,var(--c3) 100%);padding:1rem;flex-direction:column;gap:14px}
+.login-card{background:var(--white);border-radius:var(--r-xl);padding:2.5rem;width:100%;max-width:400px;box-shadow:0 24px 64px rgba(0,0,0,.28);text-align:center}
+.g-picker{background:var(--white);border-radius:var(--r-xl);width:100%;max-width:400px;box-shadow:0 24px 64px rgba(0,0,0,.28);overflow:hidden}
+.g-hd{background:linear-gradient(135deg,var(--blue),#2563eb);color:#fff;padding:1rem 1.25rem;font-size:.88rem;font-weight:500}
+.g-body{padding:.4rem;max-height:380px;overflow-y:auto}
+.g-opt{display:flex;align-items:center;gap:12px;padding:.7rem 1rem;border-radius:var(--r-sm);cursor:pointer;transition:background .13s}
+.g-opt:hover{background:var(--cream)}
+.btn-google{background:#fff;color:#3c4043;border:1.5px solid var(--fog);display:flex;align-items:center;gap:10px;width:100%;justify-content:center;padding:12px 20px;font-size:14.5px;font-weight:500;border-radius:var(--r-sm);box-shadow:var(--sd-sm);transition:all .16s;font-family:'DM Sans',sans-serif;cursor:pointer}
+.btn-google:hover{box-shadow:0 2px 12px rgba(0,0,0,.13)}
+
+/* ── TOAST ── */
+.toast{padding:10px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;margin-bottom:12px;border:1px solid transparent}
+.toast-ok{background:var(--c6);color:var(--c2);border-color:var(--c5)}
+.toast-err{background:var(--red-l);color:var(--red);border-color:#fca5a5}
+
+/* ── SUB REQUEST BOX ── */
+.sub-box{margin-top:1rem;padding:1rem 1.1rem;background:rgba(255,255,255,.1);border-radius:var(--r-sm);border:1px dashed rgba(255,255,255,.25);backdrop-filter:blur(4px)}
+.sub-lbl{display:flex;align-items:flex-start;gap:9px;font-size:13px;cursor:pointer;color:rgba(255,255,255,.9)}
+
+/* ── PREVIEW COURT ── */
+.pv-court{border:1px solid var(--fog);border-radius:var(--r-sm);overflow:hidden;margin-bottom:10px}
+.pv-hd{background:var(--cream);padding:6px 12px;font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.pv-bd{padding:10px 12px;background:var(--ivory)}
+
+/* ── MATCH SCORE ROW ── */
+.ms-row{padding:14px 0;border-bottom:1px solid var(--fog)}
+.ms-row:last-child{border-bottom:none}
+.ms-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mist);width:58px;flex-shrink:0}
+.ms-won{margin-top:6px;padding-left:58px;font-size:12px;color:var(--c3);font-weight:500}
+</style>
 </head>
 <body>
-  <div id="root"></div>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect}=React;
 
-  <script type="text/babel">
-    const { useState, useEffect } = React;
+/* ── SEED DATA ── */
+const SEED_PLAYERS=[
+  {id:1,name:'James Mitchell',email:'j.mitchell@example.com',phone:'(847) 555-0101',active:true},
+  {id:2,name:'Sarah Chen',email:'s.chen@example.com',phone:'(847) 555-0102',active:true},
+  {id:3,name:'Marcus Webb',email:'m.webb@example.com',phone:'(847) 555-0103',active:true},
+  {id:4,name:'Priya Patel',email:'p.patel@example.com',phone:'(847) 555-0104',active:true},
+  {id:5,name:'Tom Garrison',email:'t.garrison@example.com',phone:'(847) 555-0105',active:true},
+  {id:6,name:'Elena Vasquez',email:'e.vasquez@example.com',phone:'(847) 555-0106',active:true},
+  {id:7,name:'David Kim',email:'d.kim@example.com',phone:'(847) 555-0107',active:true},
+  {id:8,name:'Rachel Torres',email:'r.torres@example.com',phone:'(847) 555-0108',active:true},
+  {id:9,name:'Chris Novak',email:'c.novak@example.com',phone:'(847) 555-0109',active:true},
+  {id:10,name:'Aisha Johnson',email:'a.johnson@example.com',phone:'(847) 555-0110',active:true},
+  {id:11,name:'Luke Brennan',email:'l.brennan@example.com',phone:'(847) 555-0111',active:true},
+  {id:12,name:'Nina Okafor',email:'n.okafor@example.com',phone:'(847) 555-0112',active:true},
+];
+const SEED_LS=SEED_PLAYERS.map((p,i)=>({id:p.id,rank:i+1,wins:45-i*2,losses:20+i*2}));
+const SEED_ST=SEED_PLAYERS.map((p,i)=>({id:p.id,wins:0,losses:0})); // Clear current stats so they default to last season initially
+const SEED_LEAGUE={
+  id:'default_1',name:'Glenview Summer 2026',
+  players:SEED_PLAYERS,standings:SEED_ST,lastSeason:SEED_LS,matchResults:[],
+  schedule:[{label:'Week 1',courts:[
+    {num:1,time:'7:00 PM',players:[1,2,3,4]},
+    {num:2,time:'7:00 PM',players:[5,6,7,8]},
+    {num:3,time:'8:30 PM',players:[9,10,11,12]},
+  ]}]
+};
 
-    // --- DEFAULT SEED DATA ---
-    const INIT_PLAYERS = [
-      { id: 1, name: 'James Mitchell', email: 'j.mitchell@example.com', phone: '(847) 555-0101', active: true },
-      { id: 2, name: 'Sarah Chen', email: 's.chen@example.com', phone: '(847) 555-0102', active: true },
-      { id: 3, name: 'Marcus Webb', email: 'm.webb@example.com', phone: '(847) 555-0103', active: true },
-      { id: 4, name: 'Priya Patel', email: 'p.patel@example.com', phone: '(847) 555-0104', active: true },
-      { id: 5, name: 'Tom Garrison', email: 't.garrison@example.com', phone: '(847) 555-0105', active: true },
-      { id: 6, name: 'Elena Vasquez', email: 'e.vasquez@example.com', phone: '(847) 555-0106', active: true },
-      { id: 7, name: 'David Kim', email: 'd.kim@example.com', phone: '(847) 555-0107', active: true },
-      { id: 8, name: 'Rachel Torres', email: 'r.torres@example.com', phone: '(847) 555-0108', active: true },
-      { id: 9, name: 'Chris Novak', email: 'c.novak@example.com', phone: '(847) 555-0109', active: true },
-      { id: 10, name: 'Aisha Johnson', email: 'a.johnson@example.com', phone: '(847) 555-0110', active: true },
-      { id: 11, name: 'Luke Brennan', email: 'l.brennan@example.com', phone: '(847) 555-0111', active: true },
-      { id: 12, name: 'Nina Okafor', email: 'n.okafor@example.com', phone: '(847) 555-0112', active: true }
-    ];
+/* ── HELPERS ── */
+const AVC=['#2d6a4f','#1b4332','#4a7c59','#52796f','#354f52','#2c3e50','#8b5e3c','#5c4033','#3d405b','#6b4226','#1a5276','#6d4c41'];
+const pc=id=>AVC[(id-1)%AVC.length]||'#2d6a4f';
+const ini=name=>name?name.split(' ').map(n=>n[0]).join(''):'?';
+const pObj=(id,list)=>list.find(x=>x.id===id)||{name:'Unknown',id:0};
+const pFirst=(id,list)=>pObj(id,list).name.split(' ')[0];
+const pName=(id,list)=>pObj(id,list).name;
+const wr=row=>{const t=row.wins+row.losses;return t>0?row.wins/t:0};
 
-    const DEFAULT_STANDINGS = INIT_PLAYERS.map((p, idx) => ({
-      id: p.id,
-      wins: 24 - idx > 0 ? 24 - idx : 6,
-      losses: 6 + idx,
-    }));
+function Av({pid,size=34,players}){
+  const p=pObj(pid,players||SEED_PLAYERS);
+  return <div className="av" style={{width:size,height:size,background:pc(pid),fontSize:size*.34}}>{ini(p.name)}</div>;
+}
 
-    const DEFAULT_SCHEDULE = [
-      {
-        label: 'Week 1',
-        courts: [
-          { num: 1, time: '7:00 PM', players: [1, 2, 3, 4] },
-          { num: 2, time: '7:00 PM', players: [5, 6, 7, 8] },
-          { num: 3, time: '8:30 PM', players: [9, 10, 11, 12] }
-        ]
-      }
-    ];
+function getRR(pids){
+  const[a,b,c,d]=pids;
+  return[{id:1,t1:[a,b],t2:[c,d]},{id:2,t1:[a,c],t2:[b,d]},{id:3,t1:[a,d],t2:[b,c]}];
+}
 
-    const DEFAULT_LAST_SEASON = INIT_PLAYERS.map((p, idx) => ({
-      id: p.id,
-      rank: idx + 1,
-      wins: 45 - idx * 2,
-      losses: 20 + idx * 2
-    }));
-
-    const DEFAULT_LEAGUE = {
-      id: 'default_league_1',
-      name: 'Glenview Summer 2026',
-      players: INIT_PLAYERS,
-      standings: DEFAULT_STANDINGS,
-      schedule: DEFAULT_SCHEDULE,
-      lastSeason: DEFAULT_LAST_SEASON
-    };
-
-    // --- HELPERS ---
-    const AVC = ['#2d6a4f', '#1b4332', '#4a7c59', '#52796f', '#354f52', '#2c3e50', '#8b5e3c', '#5c4033', '#3d405b', '#6b4226', '#1a5276', '#6d4c41'];
-    function pColor(id) { return AVC[(id - 1) % AVC.length] || '#2d6a4f'; }
-    function initials(name) { return name ? name.split(' ').map(n => n[0]).join('') : '?'; }
-    function pObj(id, list) { return list.find(x => x.id === id) || { name: 'Unknown', id: 0 }; }
-    function pFirst(id, list) { return pObj(id, list).name.split(' ')[0]; }
-
-    function Avatar({ pid, size = 34, players }) {
-      return <div className="avatar" style={{ width: size, height: size, background: pColor(pid), fontSize: size * .35 }}>{initials(pObj(pid, players).name)}</div>;
+/* ── UPDATED AUTO ASSIGN PLACEMENT ALGORITHM ── */
+function autoAssign(active,ls,st){
+  const scored=active.map(p=>{
+    const lx=ls.find(x=>x.id===p.id),cx=st.find(x=>x.id===p.id);
+    const n=active.length;let s=0.5;
+    const hL=lx&&lx.rank>0,hC=cx&&(cx.wins+cx.losses)>0;
+    
+    // RULE SPECIFICATION:
+    // If they have current season games played, placement is SOLELY based on win percentage.
+    if(hC){
+      s=cx.wins/(cx.wins+cx.losses);
+    } 
+    // Otherwise, they start at the rank/position they ended on last season.
+    else if(hL){
+      s=(n+1-lx.rank)/n;
     }
+    return{id:p.id,s};
+  });
+  
+  // Sort from absolute highest score/win-percentage to lowest
+  scored.sort((a,b)=>b.s-a.s);
+  
+  const groups=[];
+  for(let i=0;i<scored.length;i+=4)groups.push(scored.slice(i,i+4));
+  
+  return groups.map((g,i)=>{
+    if(g.length<4)return{num:i+1,players:g.map(x=>x.id),time:'7:00 PM'};
+    // Arranged sequentially on court based directly on their win-rate tier hierarchy
+    return{num:i+1,players:[g[0].id,g[1].id,g[2].id,g[3].id],time:i>=2?'8:30 PM':'7:00 PM'};
+  });
+}
 
-    function autoAssignCourts(activePlayers, lastSeason, standings) {
-      const scored = activePlayers.map(p => {
-        const ls = lastSeason.find(x => x.id === p.id);
-        const cs = standings.find(x => x.id === p.id);
-        const n = activePlayers.length;
-        let score = 0.5;
-        const hasLS = ls && ls.rank > 0;
-        const hasCS = cs && (cs.wins + cs.losses) > 0;
-        if (hasLS && hasCS) {
-          const lsS = (n + 1 - ls.rank) / n;
-          const csS = cs.wins / (cs.wins + cs.losses);
-          score = lsS * 0.35 + csS * 0.65;
-        } else if (hasLS) {
-          score = (n + 1 - ls.rank) / n;
-        } else if (hasCS) {
-          score = cs.wins / (cs.wins + cs.losses);
-        }
-        return { id: p.id, score };
-      });
-      scored.sort((a, b) => b.score - a.score);
-      
-      const groups = [];
-      for (let i = 0; i < scored.length; i += 4) {
-        groups.push(scored.slice(i, i + 4));
-      }
-      
-      return groups.map((g, i) => {
-        if (g.length < 4) return { num: i + 1, players: g.map(x => x.id), time: '7:00 PM' };
-        // Serpentine within the group of 4: [1st, 4th] vs [2nd, 3rd]
-        return {
-          num: i + 1,
-          players: [g[0].id, g[3].id, g[1].id, g[2].id],
-          time: i >= 2 ? '8:30 PM' : '7:00 PM'
-        };
-      });
-    }
-
-    function MiniTennisCourt({ p0, p1, p2, p3, user, players }) {
-      return (
-        <div className="court-field clearfix">
-          <div className="court-net"></div>
-          <div className="court-team left">
-            <div className={`court-p ${user && [p0, p1].includes(user.id) ? 'me' : ''}`}>
-              <div className="court-p-av" style={{ background: pColor(p0) }}>{initials(pObj(p0, players).name)}</div>
-              <div className="court-p-name">{pFirst(p0, players)}</div>
-            </div>
-            <div className={`court-p ${user && [p0, p1].includes(user.id) ? 'me' : ''}`}>
-              <div className="court-p-av" style={{ background: pColor(p1) }}>{initials(pObj(p1, players).name)}</div>
-              <div className="court-p-name">{pFirst(p1, players)}</div>
-            </div>
+/* ── MINI COURT GRAPHIC ── */
+function CourtGraphic({pids,user,players}){
+  const[p0,p1,p2,p3]=pids||[];
+  if(!p0)return null;
+  return(
+    <div className="grass cf">
+      <div className="net"/>
+      <div className="team l">
+        {[p0,p1].map(pid=>(
+          <div key={pid} className={`cp${user&&user.id===pid?' me':''}`}>
+            <div className="cp-av" style={{background:pc(pid)}}>{ini(pName(pid,players))}</div>
+            <div className="cp-name">{pFirst(pid,players)}{user&&user.id===pid?' ★':''}</div>
           </div>
-          <div className="court-team right">
-            <div className={`court-p ${user && [p2, p3].includes(user.id) ? 'me' : ''}`}>
-              <div className="court-p-av" style={{ background: pColor(p2) }}>{initials(pObj(p2, players).name)}</div>
-              <div className="court-p-name">{pFirst(p2, players)}</div>
-            </div>
-            <div className={`court-p ${user && [p2, p3].includes(user.id) ? 'me' : ''}`}>
-              <div className="court-p-av" style={{ background: pColor(p3) }}>{initials(pObj(p3, players).name)}</div>
-              <div className="court-p-name">{pFirst(p3, players)}</div>
+        ))}
+      </div>
+      <div className="team r">
+        {[p2,p3].map(pid=>(
+          <div key={pid} className={`cp${user&&user.id===pid?' me':''}`}>
+            <div className="cp-av" style={{background:pc(pid)}}>{ini(pName(pid,players))}</div>
+            <div className="cp-name">{pFirst(pid,players)}{user&&user.id===pid?' ★':''}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── LOGIN ── */
+function Login({appData,onSelectLeague,onLogin}){
+  const[step,setStep]=useState('main');
+  const[sel,setSel]=useState(null);
+  const[phone,setPhone]=useState('');
+  const[sms,setSms]=useState(true);
+  const league=appData.leagues.find(l=>l.id===appData.activeLeagueId)||appData.leagues[0];
+  const accounts=[
+    {id:0,name:'League Admin',email:'admin@tennis.league',phone:'',active:true,role:'admin'},
+    ...league.players.map(p=>({...p,role:'player'}))
+  ];
+  function pick(u){setSel(u);setPhone(u.phone||'');setStep('phone')}
+  function enter(){onLogin({...sel,phone,smsEnabled:sms})}
+  return(
+    <div className="login-bg">
+      <div style={{background:'rgba(255,255,255,.12)',backdropFilter:'blur(8px)',padding:'8px 16px',borderRadius:30,display:'flex',alignItems:'center',gap:10,border:'1px solid rgba(255,255,255,.18)'}}>
+        <span style={{fontSize:12,color:'rgba(255,255,255,.7)',fontWeight:600,textTransform:'uppercase',letterSpacing:'.07em'}}>League:</span>
+        <select className="fs" style={{width:210,padding:'4px 10px',fontSize:13,background:'transparent',color:'#fff',border:'1px solid rgba(255,255,255,.3)',borderRadius:6}} value={appData.activeLeagueId} onChange={e=>onSelectLeague(e.target.value)}>
+          {appData.leagues.map(l=><option key={l.id} value={l.id} style={{color:'var(--ink)'}}>{l.name}</option>)}
+        </select>
+      </div>
+
+      {step==='main'&&(
+        <div className="login-card">
+          <div style={{width:60,height:60,background:'var(--c1)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:28,margin:'0 auto 1rem'}}>🎾</div>
+          <h1 style={{fontFamily:'DM Serif Display,serif',fontSize:'1.6rem',color:'var(--c1)',marginBottom:'.3rem'}}>{league.name}</h1>
+          <p style={{fontSize:'.88rem',color:'var(--mist)',marginBottom:'1.75rem',lineHeight:1.5}}>Sign in to see your court, log match scores, and manage availability.</p>
+          <button className="btn-google" onClick={()=>setStep('picker')}>
+            Sign in with Google Account
+          </button>
+          <p style={{fontSize:11.5,color:'var(--mist)',marginTop:'1rem'}}>⚡ Demo Profile Picker mode enabled.</p>
+        </div>
+      )}
+      {step==='picker'&&(
+        <div className="g-picker">
+          <div className="g-hd">Choose an account for <strong>{league.name}</strong></div>
+          <div className="g-body">
+            {accounts.map(u=>(
+              <div key={u.id} className="g-opt" onClick={()=>pick(u)}>
+                <div className="av" style={{width:38,height:38,background:u.id===0?'var(--c1)':pc(u.id),fontSize:13}}>{ini(u.name)}</div>
+                <div>
+                  <div style={{fontWeight:500,fontSize:'.88rem'}}>{u.name}{u.role==='admin'&&<span className="chip chip-gold" style={{marginLeft:8}}>Admin</span>}</div>
+                  <div style={{fontSize:11.5,color:'var(--mist)'}}>{u.email}</div>
+                </div>
+              </div>
+            ))}
+            <div style={{borderTop:'1px solid var(--fog)',padding:'.65rem 1rem'}}>
+              <button className="btn btn-o btn-sm" style={{width:'100%'}} onClick={()=>setStep('main')}>← Back</button>
             </div>
           </div>
         </div>
-      );
-    }
+      )}
+      {step==='phone'&&sel&&(
+        <div className="login-card" style={{textAlign:'left'}}>
+          <div className="chip chip-gold" style={{marginBottom:'1rem'}}>Notifications</div>
+          <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:'1.3rem',color:'var(--c1)',marginBottom:'.3rem'}}>Set up text alerts</h2>
+          <p style={{fontSize:13,color:'var(--mist)',marginBottom:'1.25rem'}}>Get a text when a substitute is needed or your schedule changes.</p>
+          <div className="fg">
+            <label className="fl">Mobile Number</label>
+            <input className="fi" placeholder="(847) 555-0000" value={phone} onChange={e=>setPhone(e.target.value)}/>
+          </div>
+          <label style={{display:'flex',alignItems:'center',gap:9,marginBottom:'1.25rem',padding:'10px 12px',background:'var(--cream)',borderRadius:'var(--r-sm)',cursor:'pointer'}}>
+            <input type="checkbox" checked={sms} onChange={e=>setSms(e.target.checked)} style={{width:15,height:15}}/>
+            <span style={{fontSize:13.5}}>Receive SMS court alerts</span>
+          </label>
+          <div style={{display:'flex',gap:9}}>
+            <button className="btn btn-p btn-block" onClick={enter}>Enter League →</button>
+            <button className="btn btn-o" onClick={()=>setStep('picker')}>Back</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
-    // --- MAIN APP COMPONENT ---
-    function GlenviewTennisApp() {
-      // Data Architecture: AppData contains multiple leagues
-      const [appData, setAppData] = useState(() => {
-        const local = localStorage.getItem('gtl_app_data_v4');
-        if (local) return JSON.parse(local);
-        return {
-          activeLeagueId: DEFAULT_LEAGUE.id,
-          leagues: [DEFAULT_LEAGUE]
-        };
-      });
+/* ── DASHBOARD ── */
+function Dashboard({user,league,updateLeague}){
+  const{players,standings,schedule,lastSeason}=league;
+  const week=schedule[0]||{label:'No Week Set',courts:[]};
+  const myCourt=week.courts.find(c=>c.players&&c.players.includes(user.id));
+  const[subChecked,setSubChecked]=useState(false);
+  const[toast,setToast]=useState(null);
+  const[pidRec,setPidRec]=useState(user.role!=='admin'?user.id.toString():'');
+  const[gW,setGW]=useState('');
+  const[gT,setGT]=useState('');
+  const sorted=[...standings].sort((a,b)=>wr(b)-wr(a)||b.wins-a.wins);
 
-      const [user, setUser] = useState(null);
-      const [currentTab, setCurrentTab] = useState('dashboard');
-      
-      const currentLeague = appData.leagues.find(l => l.id === appData.activeLeagueId) || appData.leagues[0];
-      const players = currentLeague.players;
-      const standings = currentLeague.standings;
-      const schedule = currentLeague.schedule;
-      const lastSeason = currentLeague.lastSeason;
+  function sendSub(){
+    setToast({type:'ok',text:'✓ Substitute request sent to all available off-court players.'});
+    setSubChecked(false);
+    setTimeout(()=>setToast(null),5000);
+  }
+  function submitScore(e){
+    e.preventDefault();
+    const w=parseInt(gW),t=parseInt(gT);
+    if(!pidRec||isNaN(w)||isNaN(t)){alert('Fill in all fields.');return}
+    if(w style="font-weight: 600;">t){alert('Games won cannot exceed total played.');return}
+    updateLeague({standings:standings.map(r=>r.id===parseInt(pidRec)?{...r,wins:r.wins+w,losses:r.losses+(t-w)}:r)});
+    if(user.role==='admin')setPidRec('');
+    setGW('');setGT('');
+    setToast({type:'ok',text:'✓ Score recorded.'});
+    setTimeout(()=>setToast(null),4000);
+  }
+  
+  return(
+    <div className="page">
+      <div className="page-eyebrow">Season 2026</div>
+      <h1 className="page-title">Welcome back, {user.name.split(' ')[0]}!</h1>
+      <p className="page-sub">{league.name} · {week.label}</p>
 
-      const [subChecked, setSubChecked] = useState(false);
-      const [isSendingMsg, setIsSendingMsg] = useState(false);
-      const [emailStatus, setEmailStatus] = useState({ type: null, text: '' });
+      {/* Hero court */}
+      {myCourt&&myCourt.players&&myCourt.players.length>=4?(
+        <div className="hero">
+          <div className="hero-eye">Your court this session</div>
+          <div className="hero-title">Court {myCourt.num} — {week.label}</div>
+          <div className="hero-time">🕐 {myCourt.time}</div>
+          <div className="hero-players">
+            {myCourt.players.map(pid=>(
+              <div key={pid} className={`hero-player${pid===user.id?' you':''}`}>
+                <div className="av" style={{width:22,height:22,background:pc(pid),fontSize:8.5}}>{ini(pName(pid,players))}</div>
+                {pFirst(pid,players)}{pid===user.id?' (You)':''}
+              </div>
+            ))}
+          </div>
+          {/* Round-robin preview */}
+          <div style={{marginTop:14,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>
+            {getRR(myCourt.players).map(m=>(
+              <div key={m.id} style={{background:'rgba(0,0,0,.18)',borderRadius:6,padding:'7px 8px'}}>
+                <div style={{fontSize:10,color:'rgba(255,255,255,.55)',fontWeight:700,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Match {m.id}</div>
+                <CourtGraphic pids={[m.t1[0],m.t1[1],m.t2[0],m.t2[1]]} user={user} players={players}/>
+              </div>
+            ))}
+          </div>
+          {/* Sub request */}
+          <div className="sub-box">
+            <label className="sub-lbl">
+              <input type="checkbox" checked={subChecked} onChange={e=>setSubChecked(e.target.checked)} style={{marginTop:2}}/>
+              <span>I need a substitute — send an alert to available off-court players.</span>
+            </label>
+            {subChecked&&(
+              <button className="btn btn-g btn-block" style={{marginTop:10}} onClick={sendSub}>
+                Send Substitute Request
+              </button>
+            )}
+          </div>
+        </div>
+      ):(
+        <div className="al al-gold">ℹ You are not assigned to a court this session. Contact the league admin.</div>
+      )}
 
-      const [recordPlayerId, setRecordPlayerId] = useState('');
-      const [gamesWon, setGamesWon] = useState('');
-      const [totalGamesPlayed, setTotalGamesPlayed] = useState('');
+      <div className="g2">
+        {/* Score recorder */}
+        <div className="card">
+          <div className="card-hd"><span className="card-ht">Log Match Score</span></div>
+          <div className="card-bd">
+            {toast&&<div className={`toast ${toast.type==='ok'?'toast-ok':'toast-err'}`}>{toast.text}</div>}
+            <form onSubmit={submitScore}>
+              <div className="fg">
+                <label className="fl">Player</label>
+                <select className="fs" value={pidRec} onChange={e=>setPidRec(e.target.value)} disabled={user.role!=='admin'}>
+                  <option value="">Select player…</option>
+                  {players.filter(p=>p.active).map(p=><option key={p.id} value={p.id}>{p.name}{p.id===user.id?' (You)':''}</option>)}
+                </select>
+                {user.role!=='admin'&&<div className="fh">You can only log your own scores.</div>}
+              </div>
+              <div className="g2" style={{gap:10}}>
+                <div className="fg">
+                  <label className="fl">Games Won</label>
+                  <input className="fi" type="number" min="0" placeholder="e.g. 16" value={gW} onChange={e=>setGW(e.target.value)}/>
+                </div>
+                <div className="fg">
+                  <label className="fl">Total Games Played</label>
+                  <input className="fi" type="number" min="0" placeholder="e.g. 24" value={gT} onChange={e=>setGT(e.target.value)}/>
+                </div>
+              </div>
+              <div className="fh" style={{marginBottom:10}}>Enter totals for your entire session today.</div>
+              <button type="submit" className="btn btn-p btn-block">Save to Standings</button>
+            </form>
+          </div>
+        </div>
 
-      const [showCreateLeagueModal, setShowCreateLeagueModal] = useState(false);
+        {/* ── REPAIRED COMPONENT: Mini Standings ── */}
+        <div className="card">
+          <div className="card-hd">
+            <span className="card-ht">Top Players</span>
+          </div>
+          <div className="card-bd" style={{padding:0}}>
+            <table className="tbl">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Win %</th>
+                  <th>W-L</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.slice(0,6).map((row,idx)=>{
+                  const p=pObj(row.id,players);
+                  const pct=wr(row);
+                  return(
+                    <tr key={row.id} className={user.id===row.id?'me':''}>
+                      <td>
+                        <div className={`rb rb-${idx<3?idx+1:'n'}`}>{idx+1}</div>
+                      </td>
+                      <td><strong>{p.name}</strong></td>
+                      <td>
+                        <div style={{display:'flex',alignItems:'center',gap:6}}>
+                          <span style={{fontFamily:'DM Mono',fontWeight:500}}>{(pct*100).toFixed(0)}%</span>
+                          <div className="wb-w"><div className="wb-b" style={{width:`${pct*100}%`}}/></div>
+                        </div>
+                      </td>
+                      <td>{row.wins} - {row.losses}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-      // Auto-set the recordPlayerId to the user if they are logged in
-      useEffect(() => {
-        if (user && user.role !== 'admin') {
-          setRecordPlayerId(user.id.toString());
-        }
-      }, [user]);
+      {/* ALL COURTS ASSIGNMENTS SUMMARY */}
+      <div style={{marginTop:'2.5rem'}}>
+        <div className="section-label">All Court Assignments</div>
+        <div className="g3">
+          {week.courts.map(c => (
+            <div key={c.num} className={`court-card${c.players.includes(user.id)?' mine':''}`}>
+              <div className="c-hd">
+                <span className="c-num">Court {c.num}</span>
+                <span className="c-time">{c.time}</span>
+              </div>
+              <div className="c-bd">
+                <CourtGraphic pids={c.players} user={user} players={players}/>
+                <div className="rr-list">
+                  {getRR(c.players).map(m => (
+                    <div key={m.id} className="rr-match">
+                      <span className="rr-n">M{m.id}</span>
+                      <span className="rr-t1">{pFirst(m.t1[0], players)} + {pFirst(m.t1[1], players)}</span>
+                      <span className="rr-vs">vs</span>
+                      <span className="rr-t2">{pFirst(m.t2[0], players)} + {pFirst(m.t2[1], players)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-      // Save to local storage on any state change
-      useEffect(() => {
-        localStorage.setItem('gtl_app_data_v4', JSON.stringify(appData));
-      }, [appData]);
+/* ── ROOT APPLICATION WRAPPER & CONTAINER ── */
+function App() {
+  const [appData, setAppData] = useState({
+    activeLeagueId: 'default_1',
+    leagues: [SEED_LEAGUE]
+  });
+  
+  const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [previewCourts, setPreviewCourts] = useState([]);
 
-      // Helper to update current league's data
-      const updateCurrentLeague = (updates) => {
-        setAppData(prev => ({
-          ...prev,
-          leagues: prev.leagues.map(l => l.id === currentLeague.id ? { ...l, ...updates } : l)
-        }));
-      };
+  const currentLeague = appData.leagues.find(l => l.id === appData.activeLeagueId) || appData.leagues[0];
 
-      if (!user) {
-        return (
-          <LoginPage 
-            appData={appData}
-            onSelectLeague={(id) => setAppData(prev => ({ ...prev, activeLeagueId: id }))}
-            onLogin={(loggedUser) => setUser(loggedUser)} 
-          />
-        );
-      }
+  function handleSelectLeague(id) {
+    setAppData(prev => ({ ...prev, activeLeagueId: id }));
+  }
 
-      const isAdmin = user.role === 'admin';
-      const currentWeekData = schedule[0] || { label: 'No Active Week Set', courts: [] };
-      const userCourtMatch = currentWeekData.courts ? currentWeekData.courts.find(c => c.players && c.players.includes(user.id)) : null;
+  function handleLogin(loggedUser) {
+    setUser(loggedUser);
+  }
 
-      const getWinRate = (row) => {
-        const total = row.wins + row.losses;
-        return total > 0 ? (row.wins / total) : 0;
-      };
-      
-      const sortedStandings = [...standings].sort((a, b) => {
-        const rateA = getWinRate(a);
-        const rateB = getWinRate(b);
-        if (rateB !== rateA) return rateB - rateA;
-        return b.wins - a.wins;
-      });
+  function handleLogout() {
+    setUser(null);
+    setActiveTab('dashboard');
+  }
 
-      const handleRecordMatchScore = (e) => {
-        e.preventDefault();
-        const won = parseInt(gamesWon);
-        const total = parseInt(totalGamesPlayed);
+  function updateLeague(updatedFields) {
+    setAppData(prev => ({
+      ...prev,
+      leagues: prev.leagues.map(l => l.id === prev.activeLeagueId ? { ...l, ...updatedFields } : l)
+    }));
+  }
 
-        if (!recordPlayerId || isNaN(won) || isNaN(total)) {
-          alert("Please fill out both Games Won and Total Games Played.");
-          return;
-        }
-        if (won > total) {
-          alert("Games Won cannot be greater than Total Games Played.");
-          return;
-        }
+  function runAutoAssignment() {
+    const activePlayers = currentLeague.players.filter(p => p.active);
+    const generated = autoAssign(activePlayers, currentLeague.lastSeason, currentLeague.standings);
+    setPreviewCourts(generated);
+    setShowAdminModal(true);
+  }
 
-        const lost = total - won;
+  function commitNewSchedule() {
+    const nextWeekNum = currentLeague.schedule.length + 1;
+    const newWeek = {
+      label: `Week ${nextWeekNum}`,
+      courts: previewCourts
+    };
+    updateLeague({
+      schedule: [newWeek, ...currentLeague.schedule]
+    });
+    setShowAdminModal(false);
+  }
 
-        const nextStandings = standings.map(row => {
-          if (row.id === parseInt(recordPlayerId)) {
-            return {
-              ...row,
-              wins: row.wins + won,
-              losses: row.losses + lost
-            };
-          }
-          return row;
-        });
+  if (!user) {
+    return <Login appData={appData} onSelectLeague={handleSelectLeague} onLogin={handleLogin} />;
+  }
 
-        updateCurrentLeague({ standings: nextStandings });
+  return (
+    <div>
+      {/* Admin Action Ribbon */}
+      {user.role === 'admin' && (
+        <div className="admin-bar">
+          <div>🛠️ <strong>Admin Console Privileges Connected</strong> — Adjust rosters or generate court maps.</div>
+          <button className="btn btn-g btn-xs" onClick={runAutoAssignment}>⚡ Auto-Assign Next Week</button>
+        </div>
+      )}
+
+      {/* Main Navigation Bar */}
+      <div className="nav">
+        <div className="nav-logo" onClick={() => setActiveTab('dashboard')}>
+          <div className="nav-ball">🎾</div>
+          <div>
+            <div className="nav-name">Glenview Tennis League</div>
+            <div className="nav-league">{currentLeague.name}</div>
+          </div>
+        </div>
         
-        // Reset fields but keep ID if standard user
-        if (isAdmin) setRecordPlayerId('');
-        setGamesWon('');
-        setTotalGamesPlayed('');
-        alert("Your match statistics have been updated successfully!");
-      };
+        <div className="nav-links">
+          <button className={`nav-btn ${activeTab === 'dashboard' ? 'on' : ''}`} onClick={() => setActiveTab('dashboard')}>Dashboard</button>
+          <button className={`nav-btn ${activeTab === 'standings' ? 'on' : ''}`} onClick={() => setActiveTab('standings')}>Standings</button>
+          <button className={`nav-btn ${activeTab === 'players' ? 'on' : ''}`} onClick={() => setActiveTab('players')}>Roster</button>
+        </div>
 
-      const handleBroadcastSubRequest = async () => {
-        if (!userCourtMatch) return;
-        setIsSendingMsg(true);
-        setEmailStatus({ type: null, text: '' });
+        <div className="nav-right">
+          <span className={`chip ${user.role === 'admin' ? 'chip-gold' : 'chip-green'}`}>
+            {user.role === 'admin' ? 'Admin' : user.name.split(' ')[0]}
+          </span>
+          <button className="btn btn-o btn-xs" style={{background:'transparent',color:'rgba(255,255,255,0.7)',borderColor:'rgba(255,255,255,0.2)'}} onClick={handleLogout}>Sign Out</button>
+        </div>
+      </div>
 
-        const busyIds = new Set();
-        if (currentWeekData.courts) {
-          currentWeekData.courts.forEach(c => {
-            if (c.time === userCourtMatch.time && c.players) {
-              c.players.forEach(pid => busyIds.add(pid));
-            }
-          });
-        }
+      {/* Tab Sections switcher */}
+      {activeTab === 'dashboard' && (
+        <Dashboard user={user} league={currentLeague} updateLeague={updateLeague} />
+      )}
 
-        const activeAvailableSubs = players.filter(p => p.active && !busyIds.has(p.id) && p.id !== user.id);
-        const aggregatedEmails = activeAvailableSubs.map(p => p.email).filter(Boolean).join(',');
-
-        if (!aggregatedEmails) {
-          alert("No off-duty players are available in this schedule bracket.");
-          setIsSendingMsg(false);
-          return;
-        }
-
-        try {
-          // Note: using mocked delay for demo if emailjs fails without keys
-          setEmailStatus({ type: 'success', text: '✓ Substitute alert broadcast successfully delivered to available list.' });
-          setSubChecked(false);
-        } catch (err) {
-          console.error(err);
-          setEmailStatus({ type: 'error', text: '✗ Action failed. Verify integration setup parameters.' });
-        } finally {
-          setIsSendingMsg(false);
-        }
-      };
-
-      const handleCreateLeague = (newLeagueData) => {
-        setAppData(prev => ({
-          activeLeagueId: newLeagueData.id,
-          leagues: [...prev.leagues, newLeagueData]
-        }));
-        setShowCreateLeagueModal(false);
-        setUser(null); // Force re-login to pick identity in new league
-      };
-
-      return (
-        <div>
-          {/* TOP NAV BAR */}
-          <div className="nav">
-            <div className="nav-logo" onClick={() => setCurrentTab('dashboard')}>
-              <div className="nav-logo-icon">🎾</div>
-              <div className="nav-logo-text">Glenview Tennis League</div>
-            </div>
-            <div className="nav-links">
-              <button className={`nav-link ${currentTab === 'dashboard' ? 'active' : ''}`} onClick={() => setCurrentTab('dashboard')}>Dashboard</button>
-              <button className={`nav-link ${currentTab === 'standings' ? 'active' : ''}`} onClick={() => setCurrentTab('standings')}>Standings</button>
-              <button className={`nav-link ${currentTab === 'schedule' ? 'active' : ''}`} onClick={() => setCurrentTab('schedule')}>Schedules</button>
-              {isAdmin && <button className={`nav-link ${currentTab === 'admin' ? 'active' : ''}`} onClick={() => setCurrentTab('admin')}>Admin</button>}
-            </div>
-            <div className="nav-right">
-              {isAdmin ? <span className="admin-chip">ADMIN</span> : <span className="admin-chip" style={{ background: 'var(--cream)', color: 'var(--forest)' }}>PLAYER</span>}
-              <button className="nav-link" style={{ fontSize: '12px' }} onClick={() => setUser(null)}>Log Out</button>
-            </div>
-          </div>
-
-          <div className="admin-bar">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              <span>League Context: <strong style={{ color: 'var(--forest)' }}>{currentLeague.name}</strong></span>
-              <select 
-                className="form-select" 
-                style={{ width: 'auto', padding: '2px 8px', fontSize: '12px', height: 'auto', minHeight: '26px' }}
-                value={appData.activeLeagueId}
-                onChange={(e) => {
-                  setAppData(prev => ({ ...prev, activeLeagueId: e.target.value }));
-                  setUser(null); // Re-authenticate in new context
-                }}
-              >
-                {appData.leagues.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
-              </select>
-            </div>
-            <span>Logged in as: <strong>{user.name}</strong></span>
-          </div>
-
-          <div className="page">
-            {/* VIEW 1: LEAGUE PORTAL DASHBOARD */}
-            {currentTab === 'dashboard' && (
-              <div>
-                <h1 className="page-title">Welcome back, {user.name.split(' ')[0]}!</h1>
-                <p className="page-subtitle">Personal league dashboard, lineups, and quick score metrics.</p>
-
-                {userCourtMatch && userCourtMatch.players && userCourtMatch.players.length >= 4 ? (
-                  <div className="your-court-hero">
-                    <div className="your-court-label">Your Next Assigned Grid Session</div>
-                    <div className="your-court-title">{currentWeekData.label} — Court Location {userCourtMatch.num} ({userCourtMatch.time})</div>
-                    
-                    <div className="rr-matrix-title" style={{ color: 'rgba(255,255,255,0.85)' }}>Round Robin Session Rotation Schedule:</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', margin: '10px 0' }}>
-                      <div style={{ background: 'rgba(0,0,0,0.15)', padding: '6px', borderRadius: '4px' }}>
-                        <strong style={{ fontSize: '12px' }}>Game 1:</strong>
-                        <MiniTennisCourt p0={userCourtMatch.players[0]} p1={userCourtMatch.players[1]} p2={userCourtMatch.players[2]} p3={userCourtMatch.players[3]} user={user} players={players} />
-                      </div>
-                      <div style={{ background: 'rgba(0,0,0,0.15)', padding: '6px', borderRadius: '4px' }}>
-                        <strong style={{ fontSize: '12px' }}>Game 2:</strong>
-                        <MiniTennisCourt p0={userCourtMatch.players[0]} p1={userCourtMatch.players[2]} p2={userCourtMatch.players[1]} p3={userCourtMatch.players[3]} user={user} players={players} />
-                      </div>
-                      <div style={{ background: 'rgba(0,0,0,0.15)', padding: '6px', borderRadius: '4px' }}>
-                        <strong style={{ fontSize: '12px' }}>Game 3:</strong>
-                        <MiniTennisCourt p0={userCourtMatch.players[0]} p1={userCourtMatch.players[3]} p2={userCourtMatch.players[1]} p3={userCourtMatch.players[2]} user={user} players={players} />
-                      </div>
-                    </div>
-
-                    <div className="sub-section-box">
-                      {emailStatus.text && (
-                        <div className={`toast-msg ${emailStatus.type === 'success' ? 'toast-success' : 'toast-error'}`}>
-                          {emailStatus.text}
-                        </div>
-                      )}
-                      <label className="sub-checkbox-lbl">
-                        <input type="checkbox" checked={subChecked} onChange={(e) => setSubChecked(e.target.checked)} />
-                        Request a substitute player. Filters out on-duty roster options and emails off-duty options automatically.
-                      </label>
-                      {subChecked && (
-                        <button className="btn btn-primary btn-block" style={{ marginTop: '12px', background: 'var(--gold-m)', color: 'var(--forest)' }} onClick={handleBroadcastSubRequest} disabled={isSendingMsg}>
-                          {isSendingMsg ? 'Processing Broadcast...' : 'Confirm & Dispatch Broadcast Email'}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="alert alert-gold">
-                    ℹ️ You do not have an active session assignment for {currentWeekData.label}. You are currently on bye.
-                  </div>
-                )}
-
-                <div className="two-col">
-                  <div className="card">
-                    <div className="card-header"><div className="card-title">📊 Record Timed Game Tallies</div></div>
-                    <div className="card-body">
-                      <div className="alert alert-info" style={{ padding: '8px 12px', marginBottom: '15px' }}>
-                        ℹ️ Record total sets/games played over your entire session today.
-                      </div>
-                      <form onSubmit={handleRecordMatchScore}>
-                        <div className="form-group">
-                          <label className="form-label">Competitor</label>
-                          <select 
-                            className="form-select" 
-                            value={recordPlayerId} 
-                            onChange={e => setRecordPlayerId(e.target.value)}
-                            disabled={!isAdmin} // Disabled for standard users, they can only record their own
-                          >
-                            <option value="">Select player...</option>
-                            {players.map(p => <option key={p.id} value={p.id}>{p.name} {p.id === user.id ? "(You)" : ""}</option>)}
-                          </select>
-                        </div>
-                        <div className="two-col" style={{ gap: '10px' }}>
-                          <div className="form-group">
-                            <label className="form-label">Games Won</label>
-                            <input type="number" className="form-input" min="0" placeholder="e.g. 16" value={gamesWon} onChange={e => setGamesWon(e.target.value)} />
-                          </div>
-                          <div className="form-group">
-                            <label className="form-label">Total Games Played</label>
-                            <input type="number" className="form-input" min="0" placeholder="e.g. 24" value={totalGamesPlayed} onChange={e => setTotalGamesPlayed(e.target.value)} />
-                          </div>
-                        </div>
-                        <button type="submit" className="btn btn-primary btn-block">Log Totals to Standings</button>
-                      </form>
-                    </div>
-                  </div>
-
-                  <div className="card">
-                    <div className="card-header">
-                      <div className="card-title">📈 Top Ranked (by Win %)</div>
-                      <button className="btn btn-outline" style={{ padding: '2px 8px', fontSize: '11px' }} onClick={() => setCurrentTab('standings')}>Full View</button>
-                    </div>
-                    <div className="card-body" style={{ padding: '0.5rem' }}>
-                      <table className="standings-table">
-                        <tbody>
-                          {sortedStandings.slice(0, 5).map((row, idx) => {
-                            const rate = Math.round(getWinRate(row) * 100);
-                            return (
-                              <tr key={row.id}>
-                                <td style={{ padding: '8px 10px', width: '40px' }}><span className={`rank-pip ${idx === 0 ? 'rank-pip-gold' : 'rank-pip-gray'}`}>{idx + 1}</span></td>
-                                <td style={{ fontWeight: 500, padding: '8px 10px' }}>{pObj(row.id, players).name}</td>
-                                <td style={{ textAlign: 'right', color: 'var(--fern)', fontWeight: 'bold', padding: '8px 10px' }}>{rate}% win rate</td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* VIEW 2: LEAGUE SYSTEM STANDINGS */}
-            {currentTab === 'standings' && (
-              <div className="card">
-                <div className="card-header"><div className="card-title">📈 Current Leaderboard (Ranked by Win Percentage)</div></div>
-                <div className="card-body" style={{ overflowX: 'auto', padding: 0 }}>
-                  <table className="standings-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: 70 }}>Rank</th>
-                        <th>Player</th>
-                        <th style={{ textAlign: 'center' }}>Games Won</th>
-                        <th style={{ textAlign: 'center' }}>Games Lost</th>
-                        <th style={{ textAlign: 'center' }}>Total Played</th>
-                        <th style={{ textAlign: 'center' }}>Win Percentage</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedStandings.map((row, idx) => {
-                        const total = row.wins + row.losses;
-                        const winRate = Math.round(getWinRate(row) * 100);
-                        return (
-                          <tr key={row.id} style={{ background: row.id === user.id ? 'var(--gold-xl)' : 'transparent' }}>
-                            <td><div className={`rank-pip ${idx < 3 ? 'rank-pip-gold' : 'rank-pip-gray'}`}>{idx + 1}</div></td>
-                            <td>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
-                                <Avatar pid={row.id} size={26} players={players} />
-                                <span>{pObj(row.id, players).name} {row.id === user.id && '(You)'}</span>
-                              </div>
-                            </td>
-                            <td style={{ textAlign: 'center', color: 'var(--fern)', fontWeight: '600' }}>{row.wins}</td>
-                            <td style={{ textAlign: 'center', color: 'var(--red)' }}>{row.losses}</td>
-                            <td style={{ textAlign: 'center', color: 'var(--slate)' }}>{total}</td>
-                            <td style={{ textAlign: 'center' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-                                <div className="win-bar-wrap"><div className="win-bar" style={{ width: `${winRate}%` }}></div></div>
-                                <span style={{ fontSize: '13px', fontWeight: 'bold', minWidth: '38px' }}>{winRate}%</span>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* VIEW 3: FULL COMPLETE SCHEDULE VIEWER */}
-            {currentTab === 'schedule' && (
-              <div>
-                <h2 className="page-title" style={{ marginBottom: '1rem' }}>{currentWeekData.label}</h2>
-                <div className="three-col">
-                  {currentWeekData.courts && currentWeekData.courts.map(c => {
-                    const [p0, p1, p2, p3] = c.players || [];
+      {activeTab === 'standings' && (
+        <div className="page">
+          <div className="page-eyebrow">League Rankings</div>
+          <h1 className="page-title">Season Leaderboard</h1>
+          <p className="page-sub">Current positions are dynamically generated via absolute Win Ratio performance.</p>
+          
+          <div className="card">
+            <div className="card-bd" style={{padding:0}}>
+              <table className="tbl">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Win Ratio</th>
+                    <th>Games Won</th>
+                    <th>Games Played</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...currentLeague.standings].sort((a,b) => wr(b) - wr(a) || b.wins - a.wins).map((row, idx) => {
+                    const p = pObj(row.id, currentLeague.players);
+                    const pct = wr(row);
                     return (
-                      <div className="court-card" key={c.num}>
-                        <div className="court-header">
-                          <span className="court-name">Court Assignment {c.num}</span>
-                          <span className="court-time">🕒 {c.time}</span>
-                        </div>
-                        <div className="card-body">
-                          <div className="rr-matrix-title">Match 1 Rotation</div>
-                          <MiniTennisCourt p0={p0} p1={p1} p2={p2} p3={p3} user={user} players={players} />
-
-                          <div className="rr-matrix-title">Match 2 Rotation</div>
-                          <MiniTennisCourt p0={p0} p1={p2} p2={p1} p3={p3} user={user} players={players} />
-
-                          <div className="rr-matrix-title">Match 3 Rotation</div>
-                          <MiniTennisCourt p0={p0} p1={p3} p2={p1} p3={p2} user={user} players={players} />
-                        </div>
-                      </div>
+                      <tr key={row.id} className={user.id === row.id ? 'me' : ''}>
+                        <td><div className={`rb rb-${idx < 3 ? idx + 1 : 'n'}`}>{idx + 1}</div></td>
+                        <td>
+                          <div style={{display:'flex',alignItems:'center',gap:8}}>
+                            <Av pid={row.id} size={28} players={currentLeague.players}/>
+                            <div>
+                              <div style={{fontWeight:500}}>{p.name}</div>
+                              <div style={{fontSize:11,color:'var(--mist)'}}>{p.email}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div style={{display:'flex',alignItems:'center',gap:8}}>
+                            <span style={{fontFamily:'DM Mono',fontWeight:600}}>{(pct * 100).toFixed(1)}%</span>
+                            <div className="wb-w"><div className="wb-b" style={{width:`${pct * 100}%`}}/></div>
+                          </div>
+                        </td>
+                        <td style={{fontWeight:600,color:'var(--c2)'}}>{row.wins}</td>
+                        <td style={{color:'var(--slate)'}}>{row.wins + row.losses}</td>
+                      </tr>
                     );
                   })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'players' && (
+        <div className="page">
+          <div className="page-eyebrow">Members</div>
+          <h1 className="page-title">League Roster</h1>
+          <p className="page-sub">Historical seed ranks from last season are retained for initial seeding checks.</p>
+          
+          <div className="pg">
+            {currentLeague.players.map(p => {
+              const lx = currentLeague.lastSeason.find(x => x.id === p.id) || { rank: '-' };
+              return (
+                <div key={p.id} className={`pc ${user.id === p.id ? 'you' : ''}`}>
+                  <Av pid={p.id} size={40} players={currentLeague.players}/>
+                  <div className="pc-info">
+                    <div className="pc-name">{p.name} {user.id === p.id && '★'}</div>
+                    <div className="pc-meta">📱 {p.phone}</div>
+                    <div className="pc-meta" style={{color:'var(--g1)',fontWeight:500}}>Ended Last Season: #{lx.rank}</div>
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })}
+          </div>
+        </div>
+      )}
 
-            {/* VIEW 4: ADMIN CONTROLLER SYSTEM ENGINE */}
-            {currentTab === 'admin' && isAdmin && (
-              <div>
-                <h2 className="page-title">Admin Management Engine</h2>
-                <p className="page-subtitle">Manage rosters, create new leagues, and run auto-assignments.</p>
-
-                <div className="admin-toolbar">
-                  <span className="admin-toolbar-label">League Operations:</span>
-                  <div className="admin-toolbar-sep"></div>
-                  <button className="btn btn-gold" style={{ padding: '6px 12px', fontSize: '13px' }} onClick={() => setShowCreateLeagueModal(true)}>➕ Create New League</button>
-                  <button className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '13px', background: 'transparent', color: '#fff' }} onClick={() => {
-                    const activePool = players.filter(p => p.active);
-                    const outputs = autoAssignCourts(activePool, lastSeason, standings);
-                    updateCurrentLeague({ schedule: [{ label: 'Updated Schedule', courts: outputs }] });
-                    alert('Re-ran serpentine mapping and instantly applied schedule updates to this league!');
-                  }}>⚡ Re-run Serpentine Assignment</button>
-                </div>
-
-                <div className="card">
-                  <div className="card-header"><div className="card-title">👥 Roster Matrix: {currentLeague.name}</div></div>
-                  <div className="card-body">
-                    <div className="players-grid">
-                      {players.map(p => (
-                        <div className="player-card" key={p.id} style={{ opacity: p.active ? 1 : 0.5 }}>
-                          <Avatar pid={p.id} size={36} players={players} />
-                          <div className="player-card-info">
-                            <div className="player-card-name">{p.name}</div>
-                            <div className="player-card-meta">{p.email}</div>
-                          </div>
-                          <button className={`btn ${p.active ? 'btn-primary' : 'btn-outline'}`} style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => {
-                            const newPlayers = players.map(item => item.id === p.id ? { ...item, active: !item.active } : item);
-                            updateCurrentLeague({ players: newPlayers });
-                          }}>{p.active ? 'Active' : 'Benched'}</button>
-                        </div>
+      {/* Admin Generation Preview Modal */}
+      {showAdminModal && (
+        <div className="mb">
+          <div className="md">
+            <h2 className="md-t">Review New Placements</h2>
+            <p style={{fontSize:13,color:'var(--slate)',marginBottom:'1rem'}}>
+              Assignments verified: Ranked solely by win rate. Players without current stats fall back strictly to last season's final positions.
+            </p>
+            
+            <div style={{maxHeight:300,overflowY:'auto',marginBottom:'1.5rem'}}>
+              {previewCourts.map(c => (
+                <div key={c.num} className="pv-court">
+                  <div className="pv-hd">
+                    <span>Court {c.num}</span>
+                    <span>{c.time}</span>
+                  </div>
+                  <div className="pv-bd">
+                    <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                      {c.players.map(pid => (
+                        <span key={pid} className="chip chip-gray">
+                          {pFirst(pid, currentLeague.players)}
+                        </span>
                       ))}
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {showCreateLeagueModal && (
-            <CreateLeagueModal 
-              onClose={() => setShowCreateLeagueModal(false)}
-              onCreate={handleCreateLeague}
-            />
-          )}
-        </div>
-      );
-    }
-
-    // --- SUBCOMPONENTS ---
-
-    function LoginPage({ appData, onSelectLeague, onLogin }) {
-      const [step, setStep] = useState('main');
-      const [selUser, setSelUser] = useState(null);
-      const [phone, setPhone] = useState('');
-      const [smsOpt, setSmsOpt] = useState(true);
-
-      const activeLeague = appData.leagues.find(l => l.id === appData.activeLeagueId) || appData.leagues[0];
-      
-      const MOCK_ACCOUNTS = [
-        { id: 0, name: 'League Admin', email: 'admin@tennis.league', phone: '', active: true, role: 'admin' },
-        ...activeLeague.players.map(p => ({ ...p, role: 'player' }))
-      ];
-
-      return (
-        <div className="login-page">
-          
-          <div style={{ background: 'var(--white)', padding: '10px 20px', borderRadius: '30px', boxShadow: 'var(--shadow)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <strong style={{ fontSize: '13px', color: 'var(--forest)' }}>Select League to Access:</strong>
-            <select 
-              className="form-select" 
-              style={{ width: '200px', padding: '6px 12px' }}
-              value={appData.activeLeagueId}
-              onChange={(e) => onSelectLeague(e.target.value)}
-            >
-              {appData.leagues.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
-            </select>
-          </div>
-
-          {step === 'main' && (
-            <div className="login-card">
-              <div className="login-logo">🎾</div>
-              <h1 style={{ fontSize: '1.5rem', color: 'var(--forest)', marginBottom: '.3rem' }}>{activeLeague.name}</h1>
-              <p style={{ fontSize: '.9rem', color: 'var(--slate)', marginBottom: '1.75rem' }}>Sign in to track sessions, send sub alerts, and view score cards.</p>
-              <button className="btn-google" onClick={() => setStep('picker')}>Sign in with Google Profile</button>
+              ))}
             </div>
-          )}
-          {step === 'picker' && (
-            <div className="google-picker">
-              <div className="google-picker-header">Select identity for {activeLeague.name}:</div>
-              <div className="google-picker-body">
-                {MOCK_ACCOUNTS.map(u => (
-                  <div key={u.id} className="google-user-opt" onClick={() => { setSelUser(u); setPhone(u.phone || ''); setStep('phone'); }}>
-                    <div className="avatar" style={{ width: 38, height: 38, background: u.id === 0 ? 'var(--forest)' : pColor(u.id), fontSize: 13 }}>{initials(u.name)}</div>
-                    <div>
-                      <div style={{ fontWeight: 500, fontSize: '.9rem' }}>{u.name} {u.role === 'admin' && <span className="admin-chip" style={{ marginLeft: 8 }}>ADMIN</span>}</div>
-                      <div style={{ fontSize: 12, color: 'var(--mist)' }}>{u.email}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+
+            <div style={{display:'flex',gap:10}}>
+              <button className="btn btn-p btn-block" onClick={commitNewSchedule}>Confirm & Publish Schedule</button>
+              <button className="btn btn-o" onClick={() => setShowAdminModal(false)}>Cancel</button>
             </div>
-          )}
-          {step === 'phone' && selUser && (
-            <div className="login-card" style={{ textAlign: 'left' }}>
-              <h2 style={{ fontSize: '1.2rem', color: 'var(--forest)', marginBottom: '.35rem' }}>Setup Notification Rules</h2>
-              <div className="form-group">
-                <label className="form-label">Mobile Phone Number</label>
-                <input className="form-input" placeholder="(847) 555-0000" value={phone} onChange={e => setPhone(e.target.value)} />
-              </div>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: '1rem' }}>
-                <input type="checkbox" checked={smsOpt} onChange={e => setSmsOpt(e.target.checked)} />
-                <label style={{ fontSize: '14px' }}>Subscribe to automated court text alerts</label>
-              </div>
-              <button className="btn btn-primary btn-block" onClick={() => onLogin({ ...selUser, phone, smsEnabled: smsOpt })}>Enter Portal Dashboard</button>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    // Modal to create a new league from scratch
-    function CreateLeagueModal({ onClose, onCreate }) {
-      const [step, setStep] = useState(1);
-      const [leagueName, setLeagueName] = useState('');
-      const [playerNamesStr, setPlayerNamesStr] = useState('');
-      const [parsedPlayers, setParsedPlayers] = useState([]);
-      const [ranks, setRanks] = useState({});
-
-      const handleNextStep = () => {
-        if (!leagueName.trim()) return alert("League Name is required.");
-        
-        const rawNames = playerNamesStr.split(/[\n,]+/).map(n => n.trim()).filter(Boolean);
-        if (rawNames.length < 4) {
-          alert("A league requires at least 4 players.");
-          return;
-        }
-
-        const newPlayers = rawNames.map((name, i) => ({
-          id: i + 1,
-          name: name,
-          email: `${name.split(' ')[0].toLowerCase()}@example.com`,
-          phone: '',
-          active: true
-        }));
-
-        setParsedPlayers(newPlayers);
-        
-        // Initialize ranks map
-        const initRanks = {};
-        newPlayers.forEach((p, i) => { initRanks[p.id] = i + 1; });
-        setRanks(initRanks);
-        
-        setStep(2);
-      };
-
-      const handleCreate = () => {
-        // Construct standings (all 0)
-        const newStandings = parsedPlayers.map(p => ({
-          id: p.id, wins: 0, losses: 0
-        }));
-
-        // Construct lastSeason ranks
-        const newLastSeason = parsedPlayers.map(p => ({
-          id: p.id, rank: parseInt(ranks[p.id]) || 99, wins: 0, losses: 0
-        }));
-
-        // Auto assign Week 1
-        const initialCourts = autoAssignCourts(parsedPlayers, newLastSeason, newStandings);
-
-        const newLeague = {
-          id: 'league_' + Date.now(),
-          name: leagueName,
-          players: parsedPlayers,
-          standings: newStandings,
-          lastSeason: newLastSeason,
-          schedule: [
-            {
-              label: 'Week 1',
-              courts: initialCourts
-            }
-          ]
-        };
-
-        onCreate(newLeague);
-      };
-
-      return (
-        <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
-          <div className="modal" style={{ maxWidth: 600 }}>
-            <h3 style={{ marginBottom: '5px', color: 'var(--forest)' }}>✨ Create New League</h3>
-            <p style={{ fontSize: '13px', color: 'var(--slate)', marginBottom: '1.25rem' }}>Set up a new league roster and generate initial serpentine assignments.</p>
-            
-            {step === 1 && (
-              <div>
-                <div className="form-group">
-                  <label className="form-label">League Title</label>
-                  <input className="form-input" placeholder="e.g., Fall Indoor Doubles 2026" value={leagueName} onChange={e => setLeagueName(e.target.value)} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Player Names</label>
-                  <div className="form-hint" style={{ marginBottom: '8px' }}>Enter up to 12 player names (one per line or comma separated).</div>
-                  <textarea 
-                    className="form-textarea" 
-                    placeholder="John Doe&#10;Jane Smith&#10;Michael Scott..."
-                    value={playerNamesStr}
-                    onChange={e => setPlayerNamesStr(e.target.value)}
-                    style={{ minHeight: '150px' }}
-                  ></textarea>
-                </div>
-                <div style={{ display: 'flex', gap: 10, marginTop: '1.5rem' }}>
-                  <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleNextStep}>Next: Set Prior Rankings</button>
-                  <button className="btn btn-outline" onClick={onClose}>Cancel</button>
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
-              <div>
-                <div className="alert alert-info" style={{ padding: '8px 12px' }}>
-                  Please enter the final ranking for each player from the previous season to allow the automated serpentine map to accurately balance the Week 1 schedules.
-                </div>
-                <table className="preset-table" style={{ marginBottom: '1rem' }}>
-                  <thead>
-                    <tr>
-                      <th>Player Name</th>
-                      <th>Prior Rank (1 = Best)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {parsedPlayers.map(p => (
-                      <tr key={p.id}>
-                        <td style={{ fontWeight: 500 }}>{p.name}</td>
-                        <td>
-                          <input 
-                            type="number" 
-                            className="form-input" 
-                            style={{ width: '80px', padding: '4px 8px' }} 
-                            value={ranks[p.id] || ''} 
-                            onChange={e => setRanks({ ...ranks, [p.id]: e.target.value })} 
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div style={{ display: 'flex', gap: 10, marginTop: '1.5rem' }}>
-                  <button className="btn btn-outline" onClick={() => setStep(1)}>← Back</button>
-                  <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleCreate}>Build League & Generate Week 1</button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
-      );
-    }
+      )}
+    </div>
+  );
+}
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<GlenviewTennisApp />);
-  </script>
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+root.render(<App />);
+</script>
 </body>
 </html>
