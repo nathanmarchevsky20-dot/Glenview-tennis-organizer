@@ -1,554 +1,98 @@
-const { useState, useEffect } = React;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glenview Tennis League</title>
+  
+  <!-- React and Babel Engines -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-/* ── SEED DATA & LEAGUE CONFIG ── */
-const SEED_LEAGUE = {
-  id: 'default_1',
-  name: 'Summer Season 2026',
-  players: [
-    { id: 1, name: 'Alex Admin', email: 'admin@example.com', phone: '(847) 555-0101', active: true, role: 'admin' },
-    { id: 2, name: 'Brian Baker', email: 'brian@example.com', phone: '(847) 555-0102', active: true, role: 'player' },
-    { id: 3, name: 'Charlie Cox', email: 'charlie@example.com', phone: '(847) 555-0103', active: true, role: 'player' },
-    { id: 4, name: 'David Dunn', email: 'david@example.com', phone: '(847) 555-0104', active: true, role: 'player' }
-  ],
-  standings: [
-    { id: 1, wins: 20, losses: 4 },
-    { id: 2, wins: 15, losses: 9 },
-    { id: 3, wins: 12, losses: 12 },
-    { id: 4, wins: 8, losses: 16 }
-  ],
-  lastSeason: [
-    { id: 1, rank: 1, wins: 25, losses: 5 },
-    { id: 2, rank: 2, wins: 20, losses: 10 },
-    { id: 3, rank: 3, wins: 15, losses: 15 },
-    { id: 4, rank: 4, wins: 10, losses: 20 }
-  ],
-  schedule: [
-    {
-      label: 'Week 1',
-      courts: [
-        { num: 1, time: '6:00 PM', players: [1, 2, 3, 4] }
-      ]
-    }
-  ]
-};
+  <!-- CSS Styles -->
+  <style>
+    :root { --p: #3498db; --g: #2ecc71; --d: #2c3e50; --slate: #7f8c8d; --mist: #bdc3c7; --red: #e74c3c; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f7f6; margin: 0; color: #333; }
+    .nav { background: var(--d); color: white; padding: 1rem 2rem; display: flex; align-items: center; gap: 2rem; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .nav-btn { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-weight: 500; }
+    .nav-btn.on { color: white; border-bottom: 2px solid var(--p); }
+    .page { padding: 2rem; max-width: 1000px; margin: 0 auto; }
+    .card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 1rem; }
+    .btn { padding: 8px 16px; border-radius: 4px; cursor: pointer; border: none; font-weight: 600; }
+    .btn-p { background: var(--p); color: white; }
+    .fi { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+    .admin-bar { background: #fff3cd; padding: 0.5rem 2rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+    .pc { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid #eee; }
+    .pc.you { background: #f0f7ff; }
+  </style>
+</head>
+<body>
 
-/* ── HELPER FUNCTIONS ── */
-const pc = (pid) => ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEEAD','#D4A5A5','#9B59B6','#3498DB'][pid % 8];
-const ini = (name) => name ? name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : '';
-const pObj = (pid, players) => players.find(p => p.id === pid) || {name: 'Unknown', email: ''};
-const pName = (pid, players) => pObj(pid, players).name;
-const pFirst = (pid, players) => pName(pid, players).split(' ')[0];
-const wr = (row) => (row.wins + row.losses) > 0 ? row.wins / (row.wins + row.losses) : 0;
+  <div id="root"></div>
 
-const getRR = (pids) => {
-  if(!pids || pids.length < 4) return [];
-  return [
-    { id: 1, t1: [pids[0], pids[1]], t2: [pids[2], pids[3]] },
-    { id: 2, t1: [pids[0], pids[2]], t2: [pids[1], pids[3]] },
-    { id: 3, t1: [pids[0], pids[3]], t2: [pids[1], pids[2]] }
-  ];
-};
+  <script type="text/babel">
+    const { useState } = React;
 
-const autoAssign = (activePlayers, lastSeason, standings) => {
-  let sorted = [...activePlayers].sort((a,b) => {
-    let wrA = wr(standings.find(s=>s.id===a.id)||{wins:0,losses:0});
-    let wrB = wr(standings.find(s=>s.id===b.id)||{wins:0,losses:0});
-    if (wrA !== wrB) return wrB - wrA;
-    let rankA = (lastSeason.find(s=>s.id===a.id)||{rank:999}).rank;
-    let rankB = (lastSeason.find(s=>s.id===b.id)||{rank:999}).rank;
-    return rankA - rankB;
-  });
-  let courts = [];
-  let cNum = 1;
-  for (let i=0; i<sorted.length; i+=4) {
-    if (i+3 < sorted.length) {
-      courts.push({ num: cNum++, time: '6:00 PM', players: [sorted[i].id, sorted[i+1].id, sorted[i+2].id, sorted[i+3].id] });
-    }
-  }
-  return courts;
-};
+    /* ── DATA ── */
+    const SEED_LEAGUE = {
+      id: 'default_1',
+      name: 'Summer Season 2026',
+      players: [
+        { id: 1, name: 'Alex Admin', email: 'admin@example.com', phone: '(847) 555-0101', active: true, role: 'admin' },
+        { id: 2, name: 'Brian Baker', email: 'brian@example.com', phone: '(847) 555-0102', active: true, role: 'player' }
+      ],
+      standings: [{ id: 1, wins: 10, losses: 0 }, { id: 2, wins: 5, losses: 5 }],
+      lastSeason: [{ id: 1, rank: 1 }, { id: 2, rank: 2 }],
+      schedule: []
+    };
 
-/* ── REUSABLE UI COMPONENTS ── */
-const Av = ({pid, size, players}) => (
-  <div className="av" style={{width:size, height:size, background:pc(pid), fontSize:size*0.4, display:'flex', alignItems:'center', justifyContent:'center', color:'white', borderRadius:'50%', fontWeight:'bold'}}>
-    {ini(pName(pid, players))}
-  </div>
-);
+    /* ── APP COMPONENT ── */
+    function App() {
+      const [league, setLeague] = useState(SEED_LEAGUE);
+      const [user, setUser] = useState({ id: 1, name: 'Alex Admin', role: 'admin' });
+      const [newName, setNewName] = useState('');
 
-const CourtGraphic = ({pids, user, players}) => (
-  <div style={{display:'flex', gap:4, justifyContent:'center', margin:'10px 0'}}>
-    {pids.map(pid => (
-      <div key={pid} style={{border: pid === user?.id ? '2px solid gold' : 'none', borderRadius:'50%', padding:2}}>
-        <Av pid={pid} size={30} players={players} />
-      </div>
-    ))}
-  </div>
-);
-
-/* ── AUTHENTICATION ── */
-function Login({appData, onSelectLeague, onLogin}) {
-  const [email, setEmail] = useState('');
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const league = appData.leagues.find(l => l.id === appData.activeLeagueId);
-    const u = league.players.find(p => p.email.toLowerCase() === email.toLowerCase());
-    if(u) onLogin(u);
-    else alert('User not found. Try admin@example.com for Admin access.');
-  };
-  return (
-    <div className="page" style={{maxWidth:400, margin:'100px auto'}}>
-      <div className="card">
-        <div className="card-hd"><span className="card-ht">Login to League</span></div>
-        <div className="card-bd">
-          <form onSubmit={handleLogin}>
-            <div className="fg">
-              <label className="fl">Email Address</label>
-              <input className="fi" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="admin@example.com" required/>
-            </div>
-            <button type="submit" className="btn btn-p btn-block">Log In</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── DASHBOARD COMPONENT ── */
-function Dashboard({user, league, updateLeague}) {
-  const [pidRec, setPidRec] = useState(user.role==='admin' ? '' : user.id);
-  const [gW, setGW] = useState('');
-  const [gT, setGT] = useState('');
-  const [toast, setToast] = useState(null);
-  const [subChecked, setSubChecked] = useState(false);
-
-  const week = league.schedule[0] || {label:'No active week', courts:[]};
-  const myCourt = week.courts.find(c => c.players.includes(user.id));
-  const players = league.players;
-  const sorted = [...league.standings].sort((a,b) => wr(b)-wr(a) || b.wins-a.wins);
-
-  const sendSub = () => {
-    setToast({type:'ok', text:'✓ Substitute request sent!'});
-    setTimeout(()=>setToast(null), 4000);
-  };
-
-  const submitScore = (e) => {
-    e.preventDefault();
-    if(!gW || !gT) return;
-    const targetPid = user.role === 'admin' ? (pidRec ? parseInt(pidRec) : user.id) : user.id;
-    
-    const newStandings = league.standings.map(s => {
-      if (s.id === targetPid) {
-        return {...s, wins: s.wins + parseInt(gW), losses: s.losses + (parseInt(gT) - parseInt(gW))};
+      function addPlayer(e) {
+        e.preventDefault();
+        const newId = league.players.length + 1;
+        setLeague({
+          ...league,
+          players: [...league.players, { id: newId, name: newName, email: 'new@ex.com', active: true, role: 'player' }],
+          standings: [...league.standings, { id: newId, wins: 0, losses: 0 }]
+        });
+        setNewName('');
       }
-      return s;
-    });
-    updateLeague({standings: newStandings});
 
-    if(user.role==='admin') setPidRec('');
-    setGW(''); setGT('');
-    setToast({type:'ok',text:'✓ Score recorded.'});
-    setTimeout(()=>setToast(null),4000);
-  };
-  
-  return(
-    <div className="page">
-      <div className="page-eyebrow">Season 2026</div>
-      <h1 className="page-title">Welcome back, {user.name.split(' ')[0]}!</h1>
-      <p className="page-sub">{league.name} · {week.label}</p>
-
-      {myCourt&&myCourt.players&&myCourt.players.length>=4?(
-        <div className="hero">
-          <div className="hero-eye">Your court this session</div>
-          <div className="hero-title">Court {myCourt.num} — {week.label}</div>
-          <div className="hero-time">🕐 {myCourt.time}</div>
-          <div className="hero-players">
-            {myCourt.players.map(pid=>(
-              <div key={pid} className={`hero-player${pid===user.id?' you':''}`}>
-                <div className="av" style={{width:22,height:22,background:pc(pid),fontSize:8.5}}>{ini(pName(pid,players))}</div>
-                {pFirst(pid,players)}{pid===user.id?' (You)':''}
-              </div>
-            ))}
+      return (
+        <div>
+          <div className="nav">
+            <div><strong>Glenview League</strong></div>
           </div>
-          <div style={{marginTop:14,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>
-            {getRR(myCourt.players).map(m=>(
-              <div key={m.id} style={{background:'rgba(0,0,0,.18)',borderRadius:6,padding:'7px 8px'}}>
-                <div style={{fontSize:10,color:'rgba(255,255,255,.55)',fontWeight:700,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Match {m.id}</div>
-                <CourtGraphic pids={[m.t1[0],m.t1[1],m.t2[0],m.t2[1]]} user={user} players={players}/>
-              </div>
-            ))}
-          </div>
-          <div className="sub-box">
-            <label className="sub-lbl">
-              <input type="checkbox" checked={subChecked} onChange={e=>setSubChecked(e.target.checked)} style={{marginTop:2}}/>
-              <span>I need a substitute — send an alert to available off-court players.</span>
-            </label>
-            {subChecked&&(
-              <button className="btn btn-g btn-block" style={{marginTop:10}} onClick={sendSub}>
-                Send Substitute Request
-              </button>
+          <div className="page">
+            <h1>Roster</h1>
+            {user.role === 'admin' && (
+              <form onSubmit={addPlayer} className="card">
+                <input className="fi" placeholder="Player Name" value={newName} onChange={e => setNewName(e.target.value)} />
+                <button type="submit" className="btn btn-p" style={{marginTop: '10px'}}>Add Player</button>
+              </form>
             )}
-          </div>
-        </div>
-      ):(
-        <div className="al al-gold">ℹ You are not assigned to a court this session. Contact the league admin.</div>
-      )}
-
-      <div className="g2">
-        <div className="card">
-          <div className="card-hd"><span className="card-ht">Log Match Score</span></div>
-          <div className="card-bd">
-            {toast&&<div className={`toast ${toast.type==='ok'?'toast-ok':'toast-err'}`}>{toast.text}</div>}
-            <form onSubmit={submitScore}>
-              <div className="fg">
-                <label className="fl">Player</label>
-                <select className="fs" value={pidRec} onChange={e=>setPidRec(e.target.value)} disabled={user.role!=='admin'}>
-                  <option value="">Select player…</option>
-                  {players.filter(p=>p.active).map(p=><option key={p.id} value={p.id}>{p.name}{p.id===user.id?' (You)':''}</option>)}
-                </select>
-                {user.role!=='admin'&&<div className="fh">You can only log your own scores.</div>}
-              </div>
-              <div className="g2" style={{gap:10}}>
-                <div className="fg">
-                  <label className="fl">Games Won</label>
-                  <input className="fi" type="number" min="0" placeholder="e.g. 16" value={gW} onChange={e=>setGW(e.target.value)}/>
-                </div>
-                <div className="fg">
-                  <label className="fl">Total Games Played</label>
-                  <input className="fi" type="number" min="0" placeholder="e.g. 24" value={gT} onChange={e=>setGT(e.target.value)}/>
-                </div>
-              </div>
-              <div className="fh" style={{marginBottom:10}}>Enter totals for your entire session today.</div>
-              <button type="submit" className="btn btn-p btn-block">Save to Standings</button>
-            </form>
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-hd"><span className="card-ht">Top Players</span></div>
-          <div className="card-bd" style={{padding:0}}>
-            <table className="tbl">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Player</th>
-                  <th>Win %</th>
-                  <th>W-L</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sorted.slice(0,6).map((row,idx)=>{
-                  const p = pObj(row.id,players);
-                  const pct = wr(row);
-                  return(
-                    <tr key={row.id} className={user.id===row.id?'me':''}>
-                      <td><div className={`rb rb-${idx<3?idx+1:'n'}`}>{idx+1}</div></td>
-                      <td><strong>{p.name}</strong></td>
-                      <td>
-                        <div style={{display:'flex',alignItems:'center',gap:6}}>
-                          <span style={{fontFamily:'DM Mono',fontWeight:500}}>{(pct*100).toFixed(0)}%</span>
-                          <div className="wb-w"><div className="wb-b" style={{width:`${pct*100}%`}}/></div>
-                        </div>
-                      </td>
-                      <td>{row.wins} - {row.losses}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div style={{marginTop:'2.5rem'}}>
-        <div className="section-label">All Court Assignments</div>
-        <div className="g3">
-          {week.courts.map(c => (
-            <div key={c.num} className={`court-card${c.players.includes(user.id)?' mine':''}`}>
-              <div className="c-hd">
-                <span className="c-num">Court {c.num}</span>
-                <span className="c-time">{c.time}</span>
-              </div>
-              <div className="c-bd">
-                <CourtGraphic pids={c.players} user={user} players={players}/>
-                <div className="rr-list">
-                  {getRR(c.players).map(m => (
-                    <div key={m.id} className="rr-match">
-                      <span className="rr-n">M{m.id}</span>
-                      <span className="rr-t1">{pFirst(m.t1[0], players)} + {pFirst(m.t1[1], players)}</span>
-                      <span className="rr-vs">vs</span>
-                      <span className="rr-t2">{pFirst(m.t2[0], players)} + {pFirst(m.t2[1], players)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── CORE RUNTIME APP SHELL ── */
-function App() {
-  const [appData, setAppData] = useState({
-    activeLeagueId: 'default_1',
-    leagues: [SEED_LEAGUE]
-  });
-  
-  const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [showAdminModal, setShowAdminModal] = useState(false);
-  const [previewCourts, setPreviewCourts] = useState([]);
-
-  const [newPlayerName, setNewPlayerName] = useState('');
-  const [newPlayerEmail, setNewPlayerEmail] = useState('');
-  const [newPlayerPhone, setNewPlayerPhone] = useState('');
-
-  const currentLeague = appData.leagues.find(l => l.id === appData.activeLeagueId) || appData.leagues[0];
-
-  function handleSelectLeague(id) {
-    setAppData(prev => ({ ...prev, activeLeagueId: id }));
-  }
-
-  function handleLogin(loggedUser) { setUser(loggedUser); }
-  function handleLogout() { setUser(null); setActiveTab('dashboard'); }
-
-  function updateLeague(updatedFields) {
-    setAppData(prev => ({
-      ...prev,
-      leagues: prev.leagues.map(l => l.id === prev.activeLeagueId ? { ...l, ...updatedFields } : l)
-    }));
-  }
-
-  function runAutoAssignment() {
-    const activePlayers = currentLeague.players.filter(p => p.active);
-    const generated = autoAssign(activePlayers, currentLeague.lastSeason, currentLeague.standings);
-    setPreviewCourts(generated);
-    setShowAdminModal(true);
-  }
-
-  function commitNewSchedule() {
-    const nextWeekNum = currentLeague.schedule.length + 1;
-    const newWeek = { label: `Week ${nextWeekNum}`, courts: previewCourts };
-    updateLeague({ schedule: [newWeek, ...currentLeague.schedule] });
-    setShowAdminModal(false);
-  }
-
-  function handleAddPlayer(e) {
-    e.preventDefault();
-    if (!newPlayerName || !newPlayerEmail) return;
-    
-    const newId = Math.max(...currentLeague.players.map(p => p.id), 0) + 1;
-    
-    const newPlayer = { id: newId, name: newPlayerName, email: newPlayerEmail, phone: newPlayerPhone, active: true, role: 'player' };
-    const newStandingsRow = { id: newId, wins: 0, losses: 0 };
-    const newLastSeasonRow = { id: newId, rank: currentLeague.players.length + 1, wins: 0, losses: 0 };
-    
-    updateLeague({
-      players: [...currentLeague.players, newPlayer],
-      standings: [...currentLeague.standings, newStandingsRow],
-      lastSeason: [...currentLeague.lastSeason, newLastSeasonRow]
-    });
-    
-    setNewPlayerName(''); 
-    setNewPlayerEmail(''); 
-    setNewPlayerPhone('');
-  }
-
-  function handleDeletePlayer(id) {
-    if (!window.confirm('Are you sure you want to remove this player?')) return;
-    
-    updateLeague({
-      players: currentLeague.players.filter(p => p.id !== id),
-      standings: currentLeague.standings.filter(s => s.id !== id),
-      lastSeason: currentLeague.lastSeason.filter(ls => ls.id !== id)
-    });
-  }
-
-  if (!user) {
-    return <Login appData={appData} onSelectLeague={handleSelectLeague} onLogin={handleLogin} />;
-  }
-
-  return (
-    <div>
-      {user.role === 'admin' && (
-        <div className="admin-bar">
-          <div>🛠️ <strong>Admin Console Privileges Connected</strong> — Adjust rosters or generate court maps.</div>
-          <button className="btn btn-g btn-xs" onClick={runAutoAssignment}>⚡ Auto-Assign Next Week</button>
-        </div>
-      )}
-
-      <div className="nav">
-        <div className="nav-logo" onClick={() => setActiveTab('dashboard')}>
-          <div className="nav-ball">🎾</div>
-          <div>
-            <div className="nav-name">Glenview Tennis League</div>
-            <div className="nav-league">{currentLeague.name}</div>
-          </div>
-        </div>
-        
-        <div className="nav-links">
-          <button className={`nav-btn ${activeTab === 'dashboard' ? 'on' : ''}`} onClick={() => setActiveTab('dashboard')}>Dashboard</button>
-          <button className={`nav-btn ${activeTab === 'standings' ? 'on' : ''}`} onClick={() => setActiveTab('standings')}>Standings</button>
-          <button className={`nav-btn ${activeTab === 'players' ? 'on' : ''}`} onClick={() => setActiveTab('players')}>Roster</button>
-        </div>
-
-        <div className="nav-right">
-          <span className={`chip ${user.role === 'admin' ? 'chip-gold' : 'chip-green'}`}>
-            {user.role === 'admin' ? 'Admin' : user.name.split(' ')[0]}
-          </span>
-          <button className="btn btn-o btn-xs" style={{background:'transparent',color:'rgba(255,255,255,0.7)',borderColor:'rgba(255,255,255,0.2)'}} onClick={handleLogout}>Sign Out</button>
-        </div>
-      </div>
-
-      {activeTab === 'dashboard' && (
-        <Dashboard user={user} league={currentLeague} updateLeague={updateLeague} />
-      )}
-
-      {activeTab === 'standings' && (
-        <div className="page">
-          <div className="page-eyebrow">League Rankings</div>
-          <h1 className="page-title">Season Leaderboard</h1>
-          <p className="page-sub">Current positions are dynamically generated via absolute Win Ratio performance.</p>
-          
-          <div className="card">
-            <div className="card-bd" style={{padding:0}}>
-              <table className="tbl">
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Player</th>
-                    <th>Win Ratio</th>
-                    <th>Games Won</th>
-                    <th>Games Played</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[...currentLeague.standings].sort((a,b) => wr(b) - wr(a) || b.wins - a.wins).map((row, idx) => {
-                    const p = pObj(row.id, currentLeague.players);
-                    const pct = wr(row);
-                    return (
-                      <tr key={row.id} className={user.id === row.id ? 'me' : ''}>
-                        <td><div className={`rb rb-${idx < 3 ? idx + 1 : 'n'}`}>{idx + 1}</div></td>
-                        <td>
-                          <div style={{display:'flex',alignItems:'center',gap:8}}>
-                            <Av pid={row.id} size={28} players={currentLeague.players}/>
-                            <div>
-                              <div style={{fontWeight:500}}>{p.name}</div>
-                              <div style={{fontSize:11,color:'var(--mist)'}}>{p.email}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div style={{display:'flex',alignItems:'center',gap:8}}>
-                            <span style={{fontFamily:'DM Mono',fontWeight:600}}>{(pct * 100).toFixed(1)}%</span>
-                            <div className="wb-w"><div className="wb-b" style={{width:`${pct * 100}%`}}/></div>
-                          </div>
-                        </td>
-                        <td style={{fontWeight:600,color:'var(--c2)'}}>{row.wins}</td>
-                        <td style={{color:'var(--slate)'}}>{row.wins + row.losses}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'players' && (
-        <div className="page">
-          <div className="page-eyebrow">Members</div>
-          <h1 className="page-title">League Roster</h1>
-          <p className="page-sub">Historical seed ranks from last season are retained for initial seeding checks.</p>
-          
-          {user.role === 'admin' && (
-            <div className="card" style={{marginBottom: '1.5rem'}}>
-              <div className="card-hd"><span className="card-ht">Add New Player</span></div>
-              <div className="card-bd">
-                <form onSubmit={handleAddPlayer} style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'flex-end'}}>
-                  <div className="fg" style={{flex: '1 1 200px', marginBottom: 0}}>
-                    <label className="fl">Name</label>
-                    <input className="fi" required placeholder="Player Name" value={newPlayerName} onChange={e => setNewPlayerName(e.target.value)} />
-                  </div>
-                  <div className="fg" style={{flex: '1 1 200px', marginBottom: 0}}>
-                    <label className="fl">Email</label>
-                    <input className="fi" required type="email" placeholder="player@email.com" value={newPlayerEmail} onChange={e => setNewPlayerEmail(e.target.value)} />
-                  </div>
-                  <div className="fg" style={{flex: '1 1 200px', marginBottom: 0}}>
-                    <label className="fl">Phone</label>
-                    <input className="fi" placeholder="(847) 555-0000" value={newPlayerPhone} onChange={e => setNewPlayerPhone(e.target.value)} />
-                  </div>
-                  <button type="submit" className="btn btn-p" style={{height: '40px'}}>+ Add Player</button>
-                </form>
-              </div>
-            </div>
-          )}
-
-          <div className="pg">
-            {currentLeague.players.map(p => {
-              const lx = currentLeague.lastSeason.find(x => x.id === p.id) || { rank: '-' };
-              return (
-                <div key={p.id} className={`pc ${user.id === p.id ? 'you' : ''}`}>
-                  <Av pid={p.id} size={40} players={currentLeague.players}/>
-                  <div className="pc-info">
-                    <div className="pc-name">{p.name} {user.id === p.id && '★'}</div>
-                    <div className="pc-meta">📱 {p.phone}</div>
-                    <div className="pc-meta" style={{color:'var(--g1)',fontWeight:500}}>Ended Last Season: #{lx.rank}</div>
-                  </div>
-                  {user.role === 'admin' && (
-                    <button className="btn btn-o btn-xs" style={{color: 'var(--red)', borderColor: 'var(--red-l)'}} onClick={() => handleDeletePlayer(p.id)}>
-                      Remove
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {showAdminModal && (
-        <div className="mb">
-          <div className="md">
-            <h2 className="md-t">Review New Placements</h2>
-            <p style={{fontSize:13,color:'var(--slate)',marginBottom:'1rem'}}>
-              Assignments verified: Ranked solely by win rate. Players without current stats fall back strictly to last season's final positions.
-            </p>
-            
-            <div style={{maxHeight:300,overflowY:'auto',marginBottom:'1.5rem'}}>
-              {previewCourts.map(c => (
-                <div key={c.num} className="pv-court">
-                  <div className="pv-hd">
-                    <span>Court {c.num}</span>
-                    <span>{c.time}</span>
-                  </div>
-                  <div className="pv-bd">
-                    <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
-                      {c.players.map(pid => (
-                        <span key={pid} className="chip chip-gray">
-                          {pFirst(pid, currentLeague.players)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+            <div className="card">
+              {league.players.map(p => (
+                <div key={p.id} className="pc">
+                  {p.name}
+                  <button className="btn" style={{marginLeft: 'auto'}} onClick={() => setLeague({...league, players: league.players.filter(x=>x.id!==p.id)})}>Remove</button>
                 </div>
               ))}
             </div>
-
-            <div style={{display:'flex',gap:10}}>
-              <button className="btn btn-p btn-block" onClick={commitNewSchedule}>Confirm & Publish Schedule</button>
-              <button className="btn btn-o" onClick={() => setShowAdminModal(false)}>Cancel</button>
-            </div>
           </div>
         </div>
-      )}
-    </div>
-  );
-}
+      );
+    }
 
-const container = document.getElementById('root');
-const root = ReactDOM.createRoot(container);
-root.render(<App />);
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
